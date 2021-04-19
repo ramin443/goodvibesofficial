@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:goodvibesofficial/constants/fontconstants.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 class Stress extends StatefulWidget {
@@ -133,9 +132,9 @@ class _StressState extends State<Stress> with SingleTickerProviderStateMixin{
                         children: [
                           AppBar(
                             backgroundColor: Colors.transparent,elevation: 0,
-                            leading: GestureDetector(
-                              onTap: (){Navigator.pop(context);},
-                              child: Icon(CupertinoIcons.back,
+                            leading: IconButton(
+                              onPressed: (){Navigator.pop(context);},
+                              icon: Icon(CupertinoIcons.back,
                                 //       size: 24,
                                 size: screenwidth* 0.064,
                                 color: Colors.white,),

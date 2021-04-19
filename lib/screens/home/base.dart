@@ -1,5 +1,9 @@
+
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_statusbarcolor_ns/flutter_statusbarcolor_ns.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:goodvibesofficial/constants/fontconstants.dart';
 import 'package:goodvibesofficial/screens/home/home.dart';
@@ -22,8 +26,16 @@ List _children=[
       currentindex = index;
     });
   }
+  emptycode(){}
   @override
   Widget build(BuildContext context) {
+    Platform.isAndroid?
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: Color(0xfff5f5f5),
+        systemNavigationBarColor: Color(0xfff5f5f5),
+        systemNavigationBarIconBrightness: Brightness.dark
+    )):emptycode();
+
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
@@ -73,9 +85,9 @@ backgroundColor: Color(0xfff5f5f5),
               ),)),
             ),
             BottomNavigationBarItem(
-                icon: Icon(Icons.person_outline,
-                size: 25,
-                color: currentindex==2?Color(0xff9797de):Colors.black38),
+                icon:   Image.asset("assets/images/profileicon.png",
+    width:23,color: currentindex==2?Color(0xff9797de):Colors.black87
+    ),
                 title:Container(
                     margin: EdgeInsets.only(top: 4,bottom: 2),
                     child: Text('Profile',style: TextStyle(

@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,8 +10,10 @@ import 'package:goodvibesofficial/constants/fontconstants.dart';
 import 'package:goodvibesofficial/constants/styleconstants.dart';
 import 'package:goodvibesofficial/example%20page.dart';
 import 'package:goodvibesofficial/screens/initial/intropage.dart';
+import 'package:goodvibesofficial/screens/initial/sayhi.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
 import 'package:simple_animations/simple_animations.dart';
+
 class SplashScreen extends StatefulWidget {
   @override
   _SplashScreenState createState() => _SplashScreenState();
@@ -85,7 +89,7 @@ Future.delayed(Duration(seconds: 7),navigatetohomescreen);
   }
   Route _createRoute() {
     return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => IntroPage(),
+      pageBuilder: (context, animation, secondaryAnimation) => SayHi(),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         var begin = Offset(0.0, 1.0);
         var end = Offset.zero;
@@ -100,8 +104,15 @@ Future.delayed(Duration(seconds: 7),navigatetohomescreen);
       },
     );
   }
+  emptycode(){}
   @override
   Widget build(BuildContext context) {
+    Platform.isAndroid?
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: Color(0xfff5f5f5),
+        systemNavigationBarColor: Color(0xfff5f5f5),
+        systemNavigationBarIconBrightness: Brightness.dark
+    )):emptycode();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
@@ -158,12 +169,24 @@ Hero(
     delay: Duration(seconds: 3),
     duration: Duration(milliseconds: 850),
     builder:(context,child,value){
-return  Text('By Click&Press',style:TextStyle(
-  fontSize: screenwidth*0.048,
-  fontFamily: helveticaneuemedium,
-color: value
-//  color: Color(0xff32386a)
-),textAlign: TextAlign.center,);
+return
+  RichText(
+    text:TextSpan(
+      style: TextStyle(
+          fontSize: screenwidth*0.048,
+          fontFamily: helveticaneuemedium,
+          color: value
+      ),
+      children: [
+TextSpan(text: "By "),
+        TextSpan(text: "ClickandPress",style:TextStyle(
+            fontSize: screenwidth*0.042,
+            fontFamily: helveticaneueregular,
+            color: value
+        ), )
+      ]
+    )
+  );
     }
     )
           )    ],)

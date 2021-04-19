@@ -1,12 +1,11 @@
 
-import 'package:align_positioned/align_positioned.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:goodvibesofficial/constants/fontconstants.dart';
-import 'package:goodvibesofficial/constants/styleconstants.dart';
 import 'package:goodvibesofficial/screens/auth/login.dart';
+import 'package:goodvibesofficial/screens/home/base.dart';
 class IntroPage extends StatefulWidget {
   @override
   _IntroPageState createState() => _IntroPageState();
@@ -133,7 +132,7 @@ Column(mainAxisAlignment: MainAxisAlignment.start,
   
   Route _createRoute() {
     return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => Login(),
+      pageBuilder: (context, animation, secondaryAnimation) => Base(),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         var begin = Offset(0.0, 1.0);
         var end = Offset.zero;

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "599621067826",
+    "project_id": "api-6421642098094677721-516031",
+    "storage_bucket": "api-6421642098094677721-516031.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:599621067826:android:c140296aa6d8f4a863882b",
+        "android_client_info": {
+          "package_name": "com.goodvibesofficial"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "599621067826-6bdap02frdodn1n4hempnhjd1kgish9s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_X539gKMPAyaN1Sa7BMbkfTFfJ_4gbZA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "599621067826-6bdap02frdodn1n4hempnhjd1kgish9s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

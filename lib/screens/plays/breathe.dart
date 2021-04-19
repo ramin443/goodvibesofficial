@@ -1,13 +1,15 @@
 import 'dart:ui';
 
-import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:goodvibesofficial/constants/fontconstants.dart';
+import 'package:goodvibesofficial/screens/sharables/music_player.dart';
+import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 class Breathe extends StatefulWidget {
+
   @override
   _BreatheState createState() => _BreatheState();
 }
@@ -36,11 +38,25 @@ double screenwidth=MediaQuery.of(context).size.width;
   final animation=Tween<double>(begin: 24,end: 30).animate(_scaleanimationcontroller);
     return
     Scaffold(
-floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+floatingActionButtonLocation: FloatingActionButtonLocation.miniEndDocked,
       floatingActionButton:
+       GestureDetector(
+           onVerticalDragStart: (v){
+             Navigator.push(context, MaterialPageRoute(builder: (context)=>
+                 MusicPlayer(imageasset: "assets/images/medi.png",
+                     title: "Get Motivated",
+                     description: "Reach your goals with this advice")));
+           },
+           onTap: (){
+             Navigator.push(context, MaterialPageRoute(builder: (context)=>
+                 MusicPlayer(imageasset: "assets/images/medi.png",
+                     title: "Get Motivated",
+                     description: "Reach your goals with this advice")));
+           },
+           child:
       ClipRect(child:
       BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 8,sigmaY: 8),
+          filter: ImageFilter.blur(sigmaX: 3.5,sigmaY: 3.5),
           child:Container(
         margin: EdgeInsets.only(left: 40,right: 8),
         padding: EdgeInsets.symmetric(vertical: 18),
@@ -86,7 +102,7 @@ Expanded(child: Row(
 ],),)
           ],
         ),
-      ))),
+      )))),
       body:
 SingleChildScrollView(
     physics: BouncingScrollPhysics(),
@@ -122,7 +138,7 @@ SingleChildScrollView(
                        child:
                            AnimatedBuilder(
 animation: animation,
-builder:(context,child){ return              Icon(pressed?MdiIcons.heart:MdiIcons.heartOutline,
+builder:(context,child){ return              Icon(pressed?MdiIcons.heart:FeatherIcons.heart,
 
                size:animation.value);})),onTap: (){
                  _scaleanimationcontroller.forward();
@@ -341,11 +357,11 @@ Container(
 
             Container(
                 width: MediaQuery.of(context).size.width,
-                margin: EdgeInsets.only(top: 26,left: 26,right: 26,bottom: 14),
+                margin: EdgeInsets.only(top: 26,left: 26,right: 26,bottom: 24),
                 child:
                 Column(children:[
                   Container(
-                      margin:EdgeInsets.only(bottom: 9),
+                      margin:EdgeInsets.only(bottom: 54),
                       child:
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,

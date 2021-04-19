@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:dio/dio.dart';
+import 'package:dio_firebase_performance/dio_firebase_performance.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,15 +9,16 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:goodvibesofficial/constants/fontconstants.dart';
 import 'package:goodvibesofficial/constants/styleconstants.dart';
-import 'package:goodvibesofficial/provider/login_provider.dart';
 import 'package:goodvibesofficial/screens/auth/forgotpassword/enteremail.dart';
 import 'package:goodvibesofficial/screens/auth/signup.dart';
+import 'package:goodvibesofficial/screens/home/base.dart';
 import 'package:goodvibesofficial/screens/initial/goals.dart';
-import 'package:goodvibesofficial/services/connectivity_service.dart';
+import 'package:goodvibesofficial/utils/common_functiona.dart';
 import 'package:goodvibesofficial/utils/validator.dart';
-import 'package:goodvibesofficial/widgets/common_widgets/pages_wrapper_with_background.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+
+import '../../config.dart';
 class Login extends StatefulWidget {
   @override
   _LoginState createState() => _LoginState();
@@ -25,7 +28,7 @@ class _LoginState extends State<Login> {
   String email, pass, displayname, confirmPass;
   final _formKey = GlobalKey<FormState>();
   bool showpassword = true;
-  FormMode formMode = FormMode.LOGIN;
+ // FormMode formMode = FormMode.LOGIN;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   @override
@@ -291,7 +294,7 @@ class _SignInButtonState extends State<SignInButton> {
   String email, pass, displayname, confirmPass;
   final _formKey = GlobalKey<FormState>();
   bool showpassword = true;
-  FormMode formMode = FormMode.LOGIN;
+ // FormMode formMode = FormMode.LOGIN;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   @override
@@ -452,8 +455,12 @@ class _SignInButtonState extends State<SignInButton> {
       InkWell(
           onTap: () async{
 //            var loginProvider = Provider.of<LoginProvider>(context,listen: false);
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>Goals()));
-
+   //       Navigator.push(context, MaterialPageRoute(builder: (context)=>Goals()));
+            await login(
+              context: context,
+              email: _emailController.text,
+              password: _passwordController.text,
+            );
           },
           child:
           Container(
@@ -497,6 +504,91 @@ class _SignInButtonState extends State<SignInButton> {
       },
     );
   }
+
+
+
+  login({String email, String password, BuildContext context}) async {
+  //  _loginPageBuildContext = context;
+//    _dialogService.showLoadingDialog(context);
+  //  userEmailTobeConfimed = email;
+    Map response = await apilogin(email: email, password: password);
+    if (response.containsKey("data")) {
+  //    Navigator.of(context, rootNavigator: true).pop(true);
+Navigator.push(context, MaterialPageRoute(builder: (context)=>Goals()));
+//      _dialogService.showSuccessDialog(
+  //        message: "Log in success", context: context);
+    }
+ //   await _handleLoginResponse(response: response, context: context);
+
+  }
+  apilogin({String email, String password}) async {
+    final url = '$baseUrl/login';
+
+    final Map<String, String> body = {'email': email, 'password': password};
+    final response = await postRequest(url: url, data: body);
+
+    return response;
+  }
+  Future<Map<String, dynamic>> postRequest(
+      {var queryParameters, var data, Options options, @required var url}) async {
+  //  SessionService _sessionService = locator<SessionService>();
+    Map<String, dynamic> httpResponse = {};
+
+    Dio _dio = Dio(BaseOptions(receiveDataWhenStatusError: true));
+    final firebasePerformanceInterceptor = DioFirebasePerformanceInterceptor();
+    _dio.interceptors.add(firebasePerformanceInterceptor);
+
+    recordCrashlyticsLog("post request at $url");
+    // print(url);
+    try {
+      var response = await _dio.post(
+        url,
+        data: data,
+        options: options,
+        queryParameters: queryParameters,
+      );
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+//        handleSession(response, _sessionService);
+Navigator.push(context, MaterialPageRoute(builder: (context)=>Base())) ;
+if (response != null) {
+          if (response.data["success"] == true) {
+            httpResponse['data'] = response.data['data'];
+            if (response.data.containsKey("message"))
+              httpResponse["message"] = response.data["message"];
+          } else {
+            //// //print(response.data["error"]);
+            httpResponse["error"] = response.data["error"];
+          }
+
+          return httpResponse;
+        } // end of checking response
+
+      }
+    } on DioError catch (e, stackTrace) {
+      var errorRes = e.response.data;
+      print(errorRes);
+      if (e.toString().toLowerCase().contains("socketexception")) {
+        httpResponse["error"] = "No internet connection";
+        return httpResponse;
+      }
+      if (errorRes is Map) {
+        if (errorRes.containsKey("error")) {
+          httpResponse["error"] = errorRes["error"];
+          return httpResponse;
+        }
+      }
+
+  //    handleError(e: e.toString(), httpResponse: httpResponse, stack: stackTrace);
+
+      return httpResponse;
+    }
+
+  }
+
+
+
+
 
 }
 

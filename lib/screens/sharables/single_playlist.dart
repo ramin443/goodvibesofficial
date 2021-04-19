@@ -2,14 +2,23 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:goodvibesofficial/constants/fontconstants.dart';
 import 'package:goodvibesofficial/screens/sharables/music_player.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';class Anxiety extends StatefulWidget {
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+class SinglePlaylist extends StatefulWidget {
+  final String imageasset;
+  final String title;
+  String description;
+
+  SinglePlaylist({Key key, @required this.imageasset,@required this.title,@required this.description}) : super(key: key);
+
   @override
-  _AnxietyState createState() => _AnxietyState();
+  _SinglePlaylistState createState() => _SinglePlaylistState();
 }
 
-class _AnxietyState extends State<Anxiety> with SingleTickerProviderStateMixin {
+class _SinglePlaylistState extends State<SinglePlaylist> with SingleTickerProviderStateMixin{
   AnimationController _scaleanimationcontroller;
 
   bool pressed=false;
@@ -25,32 +34,37 @@ class _AnxietyState extends State<Anxiety> with SingleTickerProviderStateMixin {
   }
   @override
   Widget build(BuildContext context) {
-    double screenwidth=MediaQuery.of(context).size.width;
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     double screenheight=MediaQuery.of(context).size.height;
+    double screenwidth=MediaQuery.of(context).size.width;
     double screenarea=screenheight*screenwidth;
     final animation=Tween<double>(begin: 24,end: 30).animate(_scaleanimationcontroller);
-
-    return   Scaffold(
+    return    Scaffold(
         floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
         floatingActionButton:
-            GestureDetector(
-                onVerticalDragStart: (v){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>
-                      MusicPlayer(imageasset: "assets/images/medi.png",
-                          title: "Get Motivated",
-                          description: "Reach your goals with this advice")));
-                },
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>
-                      MusicPlayer(imageasset: "assets/images/medi.png",
-                          title: "Get Motivated",
-                          description: "Reach your goals with this advice")));
-                },
-                child:
+        GestureDetector(
+        onVerticalDragStart: (v){
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>
+          MusicPlayer(imageasset: widget.imageasset,
+              title: "Get Motivated",
+              description: "Reach your goals with this advice")));
+    },
+    onTap: (){
+    Navigator.push(context, MaterialPageRoute(builder: (context)=>
+    MusicPlayer(imageasset:widget.imageasset,
+    title: "Get Motivated",
+    description: "Reach your goals with this advice")));
+    },
+    child:
+        Container(child:
         ClipRect(child:
         BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 8,sigmaY: 8),
+            filter: ImageFilter.blur(sigmaX: 3.5,sigmaY: 3.5),
             child:Container(
+              color: Colors.white.withOpacity(0.24),
               margin: EdgeInsets.only(
                 //   left: 40,
                   left: screenarea*0.000159,
@@ -75,7 +89,7 @@ class _AnxietyState extends State<Anxiety> with SingleTickerProviderStateMixin {
                         ),
                         //     height: 54,width: 54,
                         height: screenheight*0.08095,width:  screenheight*0.08095,
-                        child: Image.asset("assets/images/anxietybg.png",fit: BoxFit.cover,),
+                        child: Image.asset(widget.imageasset,fit: BoxFit.cover,),
                       )),
                   Container(
                     margin: EdgeInsets.only(
@@ -122,7 +136,7 @@ class _AnxietyState extends State<Anxiety> with SingleTickerProviderStateMixin {
                     ],),)
                 ],
               ),
-            )))),
+            ))))),
         body:
         SingleChildScrollView(
             physics: BouncingScrollPhysics(),
@@ -135,9 +149,9 @@ class _AnxietyState extends State<Anxiety> with SingleTickerProviderStateMixin {
                     Container(
                         child:
                         Hero(
-                          tag: "anxiety",
+                          tag: "tagg",
                           child:
-                          Image.asset("assets/images/anxietybg.png",fit: BoxFit.cover,),)
+                          Image.asset(widget.imageasset,fit: BoxFit.cover,),)
                     ),
                     Container(
                       child:
@@ -164,7 +178,7 @@ class _AnxietyState extends State<Anxiety> with SingleTickerProviderStateMixin {
                                   child:
                                   AnimatedBuilder(
                                       animation: animation,
-                                      builder:(context,child){ return              Icon(pressed?MdiIcons.heart:MdiIcons.heartOutline,
+                                      builder:(context,child){ return              Icon(pressed?MdiIcons.heart:FeatherIcons.heart,
 
                                           size:animation.value);})),onTap: (){
                                 _scaleanimationcontroller.forward();

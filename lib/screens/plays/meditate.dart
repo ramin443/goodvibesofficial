@@ -1,10 +1,8 @@
 import 'dart:ui';
 
-import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:goodvibesofficial/constants/fontconstants.dart';
 import 'package:goodvibesofficial/screens/sharables/music_player.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -43,7 +41,11 @@ class _MeditateState extends State<Meditate> with SingleTickerProviderStateMixin
         floatingActionButton:
        GestureDetector(
            onTap: (){
-             Navigator.push(context, MaterialPageRoute(builder: (context)=>MusicPlayer()));
+             Navigator.push(context, MaterialPageRoute(builder: (context)=>MusicPlayer(
+               imageasset: "assets/images/lotusmeditatebg.png",
+               title: "Get Motivated",
+               description: "Breathing with your body",
+             )));
            },
            child:
         ClipRect(child:

@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_statusbarcolor_ns/flutter_statusbarcolor_ns.dart';
 import 'package:goodvibesofficial/example%20page.dart';
 import 'package:goodvibesofficial/screens/auth/forgotpassword/enteremail.dart';
 import 'package:goodvibesofficial/screens/auth/login.dart';
 import 'package:goodvibesofficial/screens/auth/signup.dart';
+import 'package:goodvibesofficial/screens/explore/recommended.dart';
 import 'package:goodvibesofficial/screens/home/base.dart';
 import 'package:goodvibesofficial/screens/initial/goals.dart';
 import 'package:goodvibesofficial/screens/initial/intropage.dart';
+import 'package:goodvibesofficial/screens/initial/sayhi.dart';
 import 'package:goodvibesofficial/screens/initial/splashscreen.dart';
 import 'package:goodvibesofficial/screens/plays/breathe.dart';
 import 'package:goodvibesofficial/screens/plays/meditate.dart';
 import 'package:goodvibesofficial/screens/sharables/music_player.dart';
+import 'package:goodvibesofficial/userpreferences/changepassword.dart';
+import 'package:goodvibesofficial/userpreferences/daily%20goals.dart';
+import 'package:goodvibesofficial/userpreferences/settings.dart';
 
 void main() {
   runApp(MyApp());
@@ -19,6 +25,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    FlutterStatusbarcolor.setNavigationBarColor(Colors.white,animate:true );
+    FlutterStatusbarcolor.setStatusBarColor(Colors.white,animate:true );
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Good Vibes',

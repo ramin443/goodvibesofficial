@@ -1,5 +1,4 @@
 import 'package:connectivity/connectivity.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 checkIfOffline() async {
   var result = await Connectivity().checkConnectivity();
@@ -9,7 +8,7 @@ checkIfOffline() async {
   return false;
 }
 recordCrashlyticsLog(String value) {
-  FirebaseCrashlytics.instance.log(value);
+//  FirebaseCrashlytics.instance.log(value);
 }
 void dPrint(message) {
   // print(message);
