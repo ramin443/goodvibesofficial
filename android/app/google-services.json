@@ -1,0 +1,208 @@
+{
+  "project_info": {
+    "project_number": "606043473275",
+    "firebase_url": "https://good-vibes-cd94b.firebaseio.com",
+    "project_id": "good-vibes-cd94b",
+    "storage_bucket": "good-vibes-cd94b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:606043473275:android:ecf448a046f20168",
+        "android_client_info": {
+          "package_name": "com.goodvibes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "606043473275-3jms5ts9v5s4d7eejgiq3uu7jq052gho.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.goodvibes",
+            "certificate_hash": "d7c77b3ccaaaa0ebd27fb13c7dd572a7f3390a69"
+          }
+        },
+        {
+          "client_id": "606043473275-45s6bkqncadors8r8i7902hrgit5r1q2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.goodvibes",
+            "certificate_hash": "8d129e7e50f42ef91022780270a54d31be211469"
+          }
+        },
+        {
+          "client_id": "606043473275-67flce9vjd3glq1dognadffrt0b3tfta.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.goodvibes",
+            "certificate_hash": "c439bed67b150cb2b99dd4bf7ca0dc033a1937c9"
+          }
+        },
+        {
+          "client_id": "606043473275-an5ioad5cfa0rjgq694v1a0ci46gco1l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.goodvibes",
+            "certificate_hash": "dba2041d7ebc7405f336a07721fd125128d87bcd"
+          }
+        },
+        {
+          "client_id": "606043473275-g5v0cukekfpgrlbq9ggcr39d39nerkhb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.goodvibes",
+            "certificate_hash": "f20e609bf41b43dc6255cd15992e565c659a3fdf"
+          }
+        },
+        {
+          "client_id": "606043473275-kouk62s2dtn8kslq8m1ae7ah10bav0bf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.goodvibes",
+            "certificate_hash": "1d1fe2379e7ea9d5cde19e53edbd42e7a1c4d435"
+          }
+        },
+        {
+          "client_id": "606043473275-rgpm8ud10c2nl09mdntb8k1adur1sfja.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.goodvibes",
+            "certificate_hash": "1365c47917219d5493f2b29e5ac8986c5d226c3a"
+          }
+        },
+        {
+          "client_id": "606043473275-v2v1a6hjfc4f3s6o5nnpebtd6f0d4t8t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.goodvibes",
+            "certificate_hash": "802ecf0e8e31445c18b8a7d27ed0682bf9d46333"
+          }
+        },
+        {
+          "client_id": "606043473275-vo741d6c6b2vag1pcl5ov3d29o0jpf3p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.goodvibes",
+            "certificate_hash": "97085ccecc17b38f3f6bcf3835af93d54e7e2b4c"
+          }
+        },
+        {
+          "client_id": "606043473275-o4jokb42r8euhge05q9ke4uils7a2itg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDChR_9UyPEwcTXuc3yzrGEFuCfbRJEjDk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "606043473275-3nsf41ufl6nauo4qalvj268lmap5afvj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "606043473275-9mc99bqk1fq0j4rq5mro6njbj00mtcbi.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.goodvibesofficial"
+              }
+            }
+          ]
+        }
+      },
+      "admob_app_id": "ca-app-pub-4284307101881172~6388287871"
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:606043473275:android:19f060384bb7264b13a9de",
+        "android_client_info": {
+          "package_name": "com.goodvibesofficial"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "606043473275-60e15mjfuufgnr9c57daborgr805lt9o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.goodvibesofficial",
+            "certificate_hash": "63ae039a1a971e715adcf41dfb01941b8d0b533e"
+          }
+        },
+        {
+          "client_id": "606043473275-a8pe567m8s57e56ve983rijaeqrdqjn5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.goodvibesofficial",
+            "certificate_hash": "f7c80ac803c0dcecd3e06ad77183329f31f89026"
+          }
+        },
+        {
+          "client_id": "606043473275-o4jokb42r8euhge05q9ke4uils7a2itg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDChR_9UyPEwcTXuc3yzrGEFuCfbRJEjDk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "606043473275-3nsf41ufl6nauo4qalvj268lmap5afvj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "606043473275-9mc99bqk1fq0j4rq5mro6njbj00mtcbi.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.goodvibesofficial"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:606043473275:android:1451954fba5fd1b613a9de",
+        "android_client_info": {
+          "package_name": "com.goodvibesoffl"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "606043473275-o4jokb42r8euhge05q9ke4uils7a2itg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDChR_9UyPEwcTXuc3yzrGEFuCfbRJEjDk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "606043473275-3nsf41ufl6nauo4qalvj268lmap5afvj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "606043473275-9mc99bqk1fq0j4rq5mro6njbj00mtcbi.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.goodvibesofficial"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

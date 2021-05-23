@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Good Vibes Official</string>
+
+    <!-- Theme applied to the Android Window while the process is starting when the OS's Dark Mode setting is off -->
+    <string name="facebook_app_id">956431005110106</string>
+    <string name="fb_login_protocol_scheme">fb956431005110106</string>
+
+
+</resources>
