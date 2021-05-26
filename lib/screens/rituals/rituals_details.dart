@@ -22,9 +22,9 @@ import 'package:goodvibesoffl/widgets/common_widgets/pages_wrapper_with_backgrou
 import '../../locator.dart';
 
 class RitualDetails extends StatefulWidget {
-  final custom.Playable _object;
+  final custom.Playablee _object;
 
-  const RitualDetails({@required custom.Playable object}) : _object = object;
+  const RitualDetails({@required custom.Playablee object}) : _object = object;
   @override
   _RitualDetailsState createState() => _RitualDetailsState();
 }

@@ -6,12 +6,15 @@ import 'package:feather_icons/feather_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:goodvibesoffl/bloc/musicPlayer/musicplayer_bloc.dart';
 import 'package:goodvibesoffl/constants/fontconstants.dart';
 import 'package:goodvibesoffl/models/music_model.dart';
+import 'package:goodvibesoffl/screens/sharables/MusicPlayer.dart';
 import 'package:goodvibesoffl/screens/sharables/music_player.dart';
 import 'package:goodvibesoffl/services/api_service.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:goodvibesoffl/constants/styleconstants.dart'as Styleconst;
+import 'package:provider/provider.dart';
 
 import '../../locator.dart';
 
@@ -33,6 +36,7 @@ class SinglePlaylist extends StatefulWidget {
 }
 
 class _SinglePlaylistState extends State<SinglePlaylist> with SingleTickerProviderStateMixin{
+  final mpla = MusicPlays();
   AnimationController _scaleanimationcontroller;
   bool playing=false;
   bool playmorethanonce=false;
@@ -97,7 +101,11 @@ fetchcategorytracks()async{
     double screenwidth=MediaQuery.of(context).size.width;
     double screenarea=screenheight*screenwidth;
     final animation=Tween<double>(begin: 24,end: 30).animate(_scaleanimationcontroller);
-    return    Scaffold(
+    return
+      Provider<MusicPlays>(
+      create:(_)=>MusicPlays(),
+      child:
+      Scaffold(
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton:                                _playerState==PlayerState.stop?
         SizedBox(height: 0,):
@@ -346,6 +354,39 @@ child: Column(crossAxisAlignment:CrossAxisAlignment.start,children: [
                             )]),
                           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
+                              GestureDetector(
+                                onTap: (){
+                                  Navigator.push(context, MaterialPageRoute(
+                                      builder: (context)=>
+                                          MultiProvider(
+                                              providers: [
+                                                ChangeNotifierProvider<MusicPlays>(
+                                                  create: (_)=>MusicPlays(),
+//  builder: (_,child)
+                                                  //  => DataProvider(),
+                                                ),
+                                              ],
+                                              child:
+                                              MusicPlayer(
+                                                  index: 0,
+                                                  navigatedfromminiplayer: false,
+                                                  imageasset: "assets/images/orange_circle.png",
+                                                  downloadurl:  _tracks[0].trackDownloadUrl,
+                                                  trackurl:  _tracks[0].url,
+                                                  trackduration:  _tracks[0].duration,
+                                                  trackid:  _tracks[0].id.toString(),
+                                                  title:  _tracks[0].title!=null?
+                                                  _tracks[0].title.length>28?
+                                                  _tracks[0].title.substring(0,28):
+                                                  _tracks[0].title:"",
+                                                  description: _tracks[0].description!=null?
+                                                  _tracks[0].description.length>80?
+                                                  _tracks[0].description.substring(0,80):
+                                                  _tracks[0].description:'',
+                                                  trackslist: _tracks))
+                                  ));
+                                },
+                                child:
                               ClipRRect(
                                   borderRadius: BorderRadius.all(Radius.circular(6)),
                                   child:BackdropFilter(
@@ -368,7 +409,7 @@ child: Column(crossAxisAlignment:CrossAxisAlignment.start,children: [
                                               color: Colors.white),),)
 
                                         ],),
-                                      ))),
+                                      )))),
                               Container(
                                 child: Text("00:10:00",
                                   style: TextStyle(
@@ -439,6 +480,48 @@ child: Column(crossAxisAlignment:CrossAxisAlignment.start,children: [
 
                                  crossAxisAlignment: CrossAxisAlignment.start,
                                  children: [
+                                   GestureDetector(
+                                       onTap:()async{
+                                         print( _tracks[index].url);
+                                         Navigator.push(context, MaterialPageRoute(
+                                           builder: (context)=>
+                                             MultiProvider(
+                                                 providers: [
+                                                   ChangeNotifierProvider<MusicPlays>(
+                                                     create: (_)=>MusicPlays(),
+//  builder: (_,child)
+                                                     //  => DataProvider(),
+                                                   ),
+                                                 ],
+                                                 child:
+                                               MusicPlayer(
+                                             index: index,
+                                             navigatedfromminiplayer: false,
+                                               imageasset: "assets/images/orange_circle.png",
+                                               downloadurl:  _tracks[index].trackDownloadUrl,
+                                               trackurl:  _tracks[index].url,
+                                               trackduration:  _tracks[index].duration,
+                                               trackid:  _tracks[index].id.toString(),
+                                               title:  _tracks[index].title!=null?
+                                               _tracks[index].title.length>28?
+                                               _tracks[index].title.substring(0,28):
+                                               _tracks[index].title:"",
+                                               description: _tracks[index].description!=null?
+                                               _tracks[index].description.length>80?
+                                               _tracks[index].description.substring(0,80):
+                                               _tracks[index].description:'',
+                                               trackslist: _tracks))
+                                         ));
+                       //             await     mpla.playtrack(
+                         //                    _tracks[index].id.toString(),
+                           //                  _tracks[index].title,
+                             //                _tracks[index].description,
+                               //              _tracks[index].duration,
+                                 //            _tracks[index].url,
+                                   //          _tracks[index].trackDownloadUrl);
+
+                                       },
+                                       child:
                                    ClipOval(child: Container(
                                      //           height: 35,width: 35,
                                      height: screenwidth*0.093,width: screenwidth*0.093,
@@ -452,7 +535,7 @@ child: Column(crossAxisAlignment:CrossAxisAlignment.start,children: [
                                        //     size: 26.5 ,
                                        size: screenwidth*0.0706,
                                      ),),
-                                   ),),
+                                   ),)),
                                    Container(margin: EdgeInsets.only(
                                      //   left: 11
                                        left: screenarea*0.0000439
@@ -505,7 +588,7 @@ child: Column(crossAxisAlignment:CrossAxisAlignment.start,children: [
 
 
                 ])))
-    );
+    ));
   }
   pauseorplay()async{
     Styleconst.constassetsAudioPlayer.isPlaying.value?Styleconst.constassetsAudioPlayer.pause():Styleconst.constassetsAudioPlayer.play();

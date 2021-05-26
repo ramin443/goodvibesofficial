@@ -8,10 +8,10 @@ abstract class RitualsState extends Equatable {
         this.startedPlaylists,
         this.favouritePlaylists});
 
-  final List<Playable> trackList;
+  final List<Playablee> trackList;
   final List<PlayList> ritualsPlaylists;
   final List<PlayList> startedPlaylists;
-  final List<Playable> playlistPlayables;
+  final List<Playablee> playlistPlayables;
   final List<PlayList> favouritePlaylists;
 
   @override
@@ -23,7 +23,7 @@ class RitualsTrackLoading extends RitualsState {}
 class RitualsPlaylistLoading extends RitualsState {}
 
 class RitualsTracksRefreshing extends RitualsState {
-  final List<Playable> trackList;
+  final List<Playablee> trackList;
   const RitualsTracksRefreshing({this.trackList}) : super(trackList: trackList);
 }
 
@@ -35,7 +35,7 @@ class RitualsPlaylistRefreshing extends RitualsState {
 }
 
 class RitualsTracksFetched extends RitualsState {
-  final List<Playable> trackList;
+  final List<Playablee> trackList;
   const RitualsTracksFetched({this.trackList}) : super(trackList: trackList);
 }
 
@@ -61,7 +61,7 @@ class RitualsPlaylistsFetched extends RitualsState {
 }
 
 class MoreRitualsFetched extends RitualsState {
-  final List<Playable> playlists;
+  final List<Playablee> playlists;
   const MoreRitualsFetched({this.playlists})
       : super(playlistPlayables: playlists);
 }
@@ -69,7 +69,7 @@ class MoreRitualsFetched extends RitualsState {
 class MoreRitualsLoading extends RitualsState {}
 
 class MoreRitualsRefreshing extends RitualsState {
-  final List<Playable> playlists;
+  final List<Playablee> playlists;
   const MoreRitualsRefreshing({this.playlists})
       : super(playlistPlayables: playlists);
 }

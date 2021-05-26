@@ -24,12 +24,12 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
 
 class MeditateVerticalCard extends StatelessWidget {
-  final Playable _playable;
+  final Playablee _playable;
   final bool isUserPaid = locator<UserService>().user.value.paid ?? false;
   final musicService = locator<MusicService>();
 
   MeditateVerticalCard({
-    @required Playable playable,
+    @required Playablee playable,
   }) : _playable = playable;
 
   @override
@@ -210,7 +210,7 @@ buildTitleAndSubtitleText({
 class VerticalCardStack extends StatelessWidget {
   final int index;
   final width;
-  final Playable item;
+  final Playablee item;
   final image;
   final title;
   final Function onPressed;

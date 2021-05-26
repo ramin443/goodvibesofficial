@@ -4,12 +4,15 @@ import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:goodvibesoffl/providertest/newtest.dart';
 import 'package:goodvibesoffl/screens/auth/login.dart';
 import 'package:goodvibesoffl/screens/home/base.dart';
 import 'package:goodvibesoffl/screens/initial/goals.dart';
 import 'package:goodvibesoffl/screens/initial/splashscreen.dart';
 import 'package:goodvibesoffl/screens/plays/meditate.dart';
+import 'package:goodvibesoffl/screens/sharables/MusicPlayer.dart';
 import 'package:goodvibesoffl/theme.dart';
+import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'locator.dart';
@@ -22,6 +25,7 @@ BehaviorSubject<ThemeData>()..add(defaultTheme);
 final BehaviorSubject<RewardVideoStatus> rewardedStatusStream =
 BehaviorSubject<RewardVideoStatus>();
 
+
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
 await FlutterDownloader.initialize(debug: true);
@@ -30,6 +34,7 @@ await FlutterDownloader.initialize(debug: true);
     appThemeDataStream,
     rewardedStatusStream,
   );
+
   runApp(MyApp());
 }
 
@@ -43,7 +48,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Meditate(),
+  //    routes: <String,WidgetBuilder>{
+    //    '/':(context)=>Base()
+     home:SplashScreen(),
+
+  //    home: Base(),
     );
   }
 }

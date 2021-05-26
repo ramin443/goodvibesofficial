@@ -41,9 +41,9 @@ class RitualsProvider {
   static int _totalDownloadPer = 0;
   static get totaldownloadPercentage => _totalDownloadPer / _playlistCount;
 
-  List<Playable> _ritualsTracks = [];
+  List<Playablee> _ritualsTracks = [];
   List<PlayList> _ritualsPlaylists = [];
-  List<Playable> _moreRituals = [];
+  List<Playablee> _moreRituals = [];
   List<PlayList> _startedRituals = [];
 
   List<PlayList> _favouriteRituals = [];
@@ -256,7 +256,7 @@ class RitualsProvider {
       var data = res['data'];
 
       _ritualsTracks =
-          data['playables'].map<Playable>((e) => Playable.fromJson(e)).toList();
+          data['playables'].map<Playablee>((e) => Playablee.fromJson(e)).toList();
     }
   }
 
@@ -294,7 +294,7 @@ class RitualsProvider {
       var data = res['data'] as List;
 
       _moreRituals =
-          data.map<Playable>((item) => Playable.fromJson(item)).toList();
+          data.map<Playablee>((item) => Playablee.fromJson(item)).toList();
     }
   }
 
@@ -313,9 +313,9 @@ class RitualsProvider {
         playableStatId, trackPlayedDuration);
   }
 
-  List<Playable> get ritualsTracks => _ritualsTracks;
+  List<Playablee> get ritualsTracks => _ritualsTracks;
   List<PlayList> get ritualsPlaylists => _ritualsPlaylists;
-  List<Playable> get moreRituals => _moreRituals;
+  List<Playablee> get moreRituals => _moreRituals;
   List<PlayList> get startedRituals => _startedRituals;
   List<PlayList> get favouriteRituals => _favouriteRituals;
 

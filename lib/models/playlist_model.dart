@@ -121,8 +121,8 @@ class PlayList {
     );
   }
 
-  static Playable getPlaylistPlayable(PlayList playlist) {
-    return Playable(
+  static Playablee getPlaylistPlayable(PlayList playlist) {
+    return Playablee(
         id: playlist.id,
         playList: playlist,
         track: null,

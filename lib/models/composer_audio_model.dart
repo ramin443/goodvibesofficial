@@ -48,7 +48,7 @@ class ComposerAudio {
   /// this constructor is used if , composer item have to be downloaded if they are not
   /// in assets or local files
   factory ComposerAudio.fromPlayable(
-      {P.Playable playable,
+      {P.Playablee playable,
         HomepageDynamicData data,
         List<String> localFilesList}) {
     Track track = playable.track;
@@ -116,7 +116,7 @@ class ComposerAudio {
   ///  in this cons , [shouldDownload] value in  `getAudioFileType` is always false
 
   factory ComposerAudio.fromPlayableWithOutDownload(
-      {P.Playable playable,
+      {P.Playablee playable,
         HomepageDynamicData data,
         List<String> localFilesList}) {
     Track track = playable.track;

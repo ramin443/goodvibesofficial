@@ -14,6 +14,7 @@ import 'package:goodvibesoffl/Goal/goalsdbhelper.dart';
 import 'package:goodvibesoffl/constants/fontconstants.dart';
 import 'package:goodvibesoffl/models/music_model.dart';
 import 'package:goodvibesoffl/models/playable_model.dart';
+import 'package:goodvibesoffl/providertest/newtest.dart';
 import 'package:goodvibesoffl/screens/explore/recommended.dart';
 import 'package:goodvibesoffl/screens/home/home.dart';
 import 'package:goodvibesoffl/screens/home/library.dart';
@@ -24,6 +25,7 @@ import 'package:goodvibesoffl/screens/initcategories/sleep.dart';
 import 'package:goodvibesoffl/screens/initcategories/stress.dart';
 import 'package:goodvibesoffl/screens/plays/meditate.dart';
 import 'package:goodvibesoffl/screens/premium/getpremium.dart';
+import 'package:goodvibesoffl/screens/sharables/MusicPlayer.dart';
 import 'package:goodvibesoffl/screens/sharables/mini_player.dart';
 import 'package:goodvibesoffl/screens/sharables/music_player.dart';
 import 'package:goodvibesoffl/screens/sharables/playlist_sharable.dart';
@@ -31,6 +33,7 @@ import 'package:goodvibesoffl/screens/sharables/single_playlist.dart';
 import 'package:goodvibesoffl/services/api_service.dart';
 import 'package:intl/intl.dart';
 import 'package:goodvibesoffl/constants/styleconstants.dart'as Styleconst;
+import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../locator.dart';
@@ -44,7 +47,7 @@ class _BaseState extends State<Base> {
   GoalsDatabaseHelper goalsDatabaseHelper = GoalsDatabaseHelper();
   List<GoalsModel> goalsList;
   int count = 0;
-  List<Playable> _exploretracks=[];
+  List<Playablee> _exploretracks=[];
   List<Track> _todaytracks=[];
 
   bool playing=false;
@@ -65,6 +68,7 @@ bool loop=false;
     super.initState();
 //    addcurrentaudiolistener();
     updateListView();
+
     fetchexploretracks();
     fetchtodaytracks();
     if (goalsList == null) {
@@ -92,7 +96,7 @@ return "assets/images/darkerleaf.png";
   fetchexploretracks()async{
     Map exploretracksresponse= await locator<ApiService>().getPlaylist(slug: 'suggested',page: 1,perpage: 15);
     List<dynamic> playlistlist=exploretracksresponse['data'] as List;
-    var plays=playlistlist.map<Playable>((json) => Playable.fromJson(json));
+    var plays=playlistlist.map<Playablee>((json) => Playablee.fromJson(json));
     setState(() {
       _exploretracks.addAll(plays);
     });
@@ -204,9 +208,12 @@ return "assets/images/darkerleaf.png";
       tabtap=false;
     });
   }
+
   emptycode(){}
   @override
   Widget build(BuildContext context) {
+    final musicplays=Provider.of<MusicPlays>(context);
+
     if (goalsList == null) {
       goalsList = List<GoalsModel>();
       updateListView();
@@ -228,7 +235,9 @@ return "assets/images/darkerleaf.png";
         currentindex==0?
             SafeArea(child:
         Scaffold(
-
+floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+            floatingActionButton:
+            musicplays.getminiplayer(context),
             body:
         CustomScrollView(
           physics: BouncingScrollPhysics(),
@@ -308,7 +317,8 @@ GestureDetector(
                                   top:screenarea*0.0000379
                                 //  top: 5
                               ),
-                              child: Text(
+                              child:
+                              Text(
                                 int.parse(DateFormat.H('en_US').format(DateTime.now()))<12?'Good\nMorning':
                                 int.parse(DateFormat.H('en_US').format(DateTime.now()))<16?'Good\nAfternoon':'Good\nEvening',
                                 style: TextStyle(
@@ -383,6 +393,7 @@ GestureDetector(
                                     onTap: (){
                                       setState(() {
                                         tabtap=true;
+
                                       });
                                     },
                                     child:
@@ -956,9 +967,30 @@ return
                                   GestureDetector(
                                       onTap:(){
                                         Navigator.push(context, MaterialPageRoute(builder: (context)=>
-                                            MusicPlayer(imageasset: "assets/images/orange_circle.png",
-                                                title: "Activate your higher mind",
-                                                description: "")));
+
+                                            MultiProvider(
+                                                providers: [
+                                                  ChangeNotifierProvider<MusicPlays>(
+                                                    create: (_)=>MusicPlays(),
+//  builder: (_,child)
+                                                    //  => DataProvider(),
+                                                  ),
+                                                ],
+                                                child:
+                                            MusicPlayer(
+
+                                                imageasset: "assets/images/orange_circle.png",
+                                                title: _exploretracks[index].track.title,
+                                                description: _exploretracks[index].track.description,
+                                            trackid:_exploretracks[index].id.toString() ,
+playableslist: _exploretracks,
+                                              downloadurl: _exploretracks[index].track.trackDownloadUrl,
+                                              trackduration: _exploretracks[index].track.duration,
+                                              trackurl: _exploretracks[index].track.url,
+                                              index: index,
+                                              navigatedfromminiplayer: false,
+
+                                            ))));
                                       },
                                       child:
                                       Container(
@@ -1253,7 +1285,40 @@ child:                                    ListView.builder(
                                         scrollDirection: Axis.vertical,
                                         physics: BouncingScrollPhysics(),
                                         itemBuilder: (context,index){
-                                      return    Container(
+                                      return
+                                        GestureDetector(
+                                            onTap: (){
+                                              Navigator.push(context, MaterialPageRoute(builder: (context)
+                                              =>
+                                                  MultiProvider(
+                                                      providers: [
+                                                        ChangeNotifierProvider<MusicPlays>(
+                                                          create: (_)=>MusicPlays(),
+//  builder: (_,child)
+                                                          //  => DataProvider(),
+                                                        ),
+                                                      ],
+                                                      child:
+                                                  MusicPlayer(
+                                                  navigatedfromminiplayer: false,
+                                                  trackid: _todaytracks[index].id.toString(), index: index,
+                                                  imageasset: "assets/images/orange_circle.png",
+                                                  title: _todaytracks[index].title!=null?
+                                                  _todaytracks[index].title.length>26?
+                                                  _todaytracks[index].title.substring(0,26):
+                                                  _todaytracks[index].title:"",
+                                                    description: _todaytracks[index].title!=null?
+                                                    _todaytracks[index].description.length>65?
+                                                    _todaytracks[index].description.substring(0,65):
+                                                    _todaytracks[index].description:""
+                                                    ,
+                                                  trackduration: _todaytracks[index].duration, trackurl: _todaytracks[index].url,
+                                                  downloadurl: _todaytracks[index].trackDownloadUrl,
+                                                  trackslist: _todaytracks,
+                                                ))));
+                                            },
+                                            child:
+                                        Container(
 
                                         margin: EdgeInsets.only(
                                           //    top: 22,
@@ -1349,7 +1414,7 @@ child:                                    ListView.builder(
                                               child: Image.asset(getrecenttrackpicture(index),
                                                   height:screenwidth*0.36)),
                                         ],),
-                                      );
+                                      ));
                                     })),
 
                                   ]))

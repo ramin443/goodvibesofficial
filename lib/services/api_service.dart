@@ -36,8 +36,8 @@ class ApiService {
 
   getAuthorizationWithSessionId() {
   //  var token = locator<UserService>().user.value.authToken;
-   // var sessionId = sessionService.sessionId;
-    //print("session id is: $sessionId");
+    var sessionId = sessionService.sessionId;
+    print("session id is: $sessionId");
 
     // //print(token);
     return

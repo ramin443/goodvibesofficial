@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:feather_icons/feather_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,34 +12,58 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get_it/get_it.dart';
 import 'package:goodvibesoffl/constants/fontconstants.dart';
 import 'package:goodvibesoffl/constants/styleconstants.dart'as Styleconst;
 import 'package:goodvibesoffl/favorites/favoritesdbhelper.dart';
 import 'package:goodvibesoffl/favorites/favoritetrackmodel.dart';
+import 'package:goodvibesoffl/models/music_model.dart';
+import 'package:goodvibesoffl/models/playable_model.dart';
 import 'package:goodvibesoffl/models/player_status_enum.dart';
+import 'package:goodvibesoffl/screens/sharables/MusicPlayer.dart';
 import 'package:goodvibesoffl/screens/sharables/Timer.dart';
 import 'package:goodvibesoffl/screens/sharables/share_track.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:goodvibesoffl/musicplayerfunctions/eventrecords.dart'as MusicEventRecords;
 import 'package:sqflite/sqflite.dart';
+
+import '../../locator.dart';
 class MusicPlayer extends StatefulWidget {
+  final bool navigatedfromminiplayer;
   final String imageasset;
+  final String trackid;
   final String title;
   String description;
+  final String trackduration;
+  final String trackurl;
+  final String downloadurl;
+ int index;
+   List<Track> trackslist;
+   List<Playablee> playableslist;
 
-  MusicPlayer({Key key, @required this.imageasset,@required this.title,@required this.description}) : super(key: key);
+  MusicPlayer({Key key,@required this.navigatedfromminiplayer,
+    @required this.trackid,
+    @required this.index,
+    @required this.imageasset,@required this.title,@required this.description,
+    @required this.trackduration,
+    @required this.trackurl,
+    @required this.downloadurl,
+    @required this.trackslist,@required this.playableslist}) : super(key: key);
 
   @override
   _MusicPlayerState createState() => _MusicPlayerState();
 }
 
 class _MusicPlayerState extends State<MusicPlayer> {
+//  final musicplayerlocator=locator<MusicPlays>();
   FavoritesDatabaseHelper favoritesDatabaseHelper = FavoritesDatabaseHelper();
   List<FavoriteTrackModel> favoritesList;
   int count = 0;
+  int currenttrackindex=0;
   ScrollController scrollController=ScrollController();
   String message='';
   String time='0';
@@ -65,7 +89,6 @@ double sheetheight=70;
 bool timer=false;
 //  final assetsAudioPlayer = AssetsAudioPlayer();
 int currentprogress=0;
-PlayerState _playerState;
   void _save(FavoriteTrackModel favoriteTrackModel) async {
 
     int result;
@@ -111,77 +134,22 @@ PlayerState _playerState;
   @override
   initState() {
     super.initState();
-    addcurrentaudiolistener();
+  //  onstart();
     updateListView();
  //   playinit();
   // print(favoritesList.length);
   }
-  playinit()async{
-    _playerState==PlayerState.stop?
-    await Styleconst.constassetsAudioPlayer.open(
-      Audio("assets/audio/2 Minute Timer - Calm and Relaxing Music.mp3",
-        metas: Metas(
-          title:  "Activate your higher mind",
-          artist: "Breathing with your body",
-          album: "Calm",
-          image: MetasImage.asset("assets/images/anxiety.png"), //can be MetasImage.network
-        ),
 
-      ),
-      loopMode:loop? LoopMode.single:LoopMode.none,
-      volume: 80,
-      showNotification: true,
-      //   playInBackground: PlayInBackground.enabled,
-
-    ):emptycode();
-  }
-  addcurrentaudiolistener()async{
-
-    Styleconst.constassetsAudioPlayer.currentPosition.listen((audioposition) {
-      setState(() {
-        currentprogress=audioposition.inMilliseconds;
-      });
-    });
-    Styleconst.constassetsAudioPlayer.playerState.listen((event) {
-_playerState=event;
-    });
-    Styleconst.constassetsAudioPlayer.current.listen((event) {
-      setState(() {
-        totalduration= event.audio.duration.inMilliseconds;
-      });
-    });
-  }
-  playerstatelistener(){
-    Styleconst.constassetsAudioPlayer.isPlaying.listen((currentplaystate) {
-      setState(() {
-        playing=currentplaystate;
-      });
-    });
-  }
 
 
   @override
   Widget build(BuildContext context) {
+    final musicplays=Provider.of<MusicPlays>(context);
     if (favoritesList == null) {
       favoritesList = List<FavoriteTrackModel>();
       updateListView();
     }
-    bottomsheet(){
-      showModalBottomSheet(context: context,
-          isScrollControlled: true,
 
-          builder: (BuildContext context){
-            return DraggableScrollableSheet(
-                initialChildSize: 0.5, // half screen on load
-                maxChildSize: 1,       // full screen on scroll
-                minChildSize: 0.25,
-                builder: (BuildContext context, ScrollController scrollController){
-                  return Container(
-
-                  );
-                });
-          });
-    }
 
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
@@ -228,7 +196,7 @@ _playerState=event;
 
                 favoritesList.length>0?_delete(context, favoritesList[0]):
                 _save(FavoriteTrackModel('Activate your higher mind',' Breathing with your body',
-                'assets/images/orange_circle.png'
+                widget.description
                 ));
             //    favoritespressed=!favoritespressed;
 updateListView();
@@ -273,6 +241,7 @@ updateListView();
             child:
 
                 Column(children:[
+
                   ProgressBar(
                     progress: Duration(milliseconds: currentprogress),
                     //  buffered: Duration(milliseconds: 2000),
@@ -285,7 +254,8 @@ updateListView();
                     barHeight: 1.8,
 
 
-                  ),
+                  )
+                  ,
             upwardscroll?
         ClipRect(child:BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 50,sigmaY: 50),
@@ -321,66 +291,90 @@ updateListView();
                 child: Column(crossAxisAlignment:CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(child: Text("Get Motivated",style: TextStyle(
+                    Container(child:
+                    widget.trackslist!=null?
+                    Text(
+                      widget.trackslist[widget.index].title.length<26?
+                    widget.trackslist[widget.index].title.contains("|")?
+                    widget.trackslist[widget.index].title.substring(0, widget.trackslist[widget.index].title.indexOf("|")):
+                    widget.trackslist[widget.index].title: widget.trackslist[widget.index].title.substring(0,26),style: TextStyle(
                         fontFamily: helveticaneuebold,color: Colors.black87,
                         //  fontSize: 13.5
                         fontSize: screenwidth*0.036
-                    ),),),
+                    ),):
+                    Text(
+                      widget.playableslist[widget.index].track.title.length<26?
+                      widget.playableslist[widget.index].track.title.contains("|")?
+                      widget.playableslist[widget.index].track.title.substring(0,
+                          widget.playableslist[widget.index].track.title.indexOf("|")):
+                      widget.playableslist[widget.index].track.title:
+                      widget.playableslist[widget.index].track.title.substring(0,26),style: TextStyle(
+                        fontFamily: helveticaneuebold,color: Colors.black87,
+                        //  fontSize: 13.5
+                        fontSize: screenwidth*0.036
+                    ),)
+                      ,),
                     Container(
                       margin: EdgeInsets.only(
                         //     top: 5
                           top: screenarea*0.00001999
                       ),
-                      child: Text("Reach your goals with this advice",style: TextStyle(
-                          fontFamily: helveticaneueregular,color: Colors.black54,
+                      child:
+                      widget.trackslist!=null?
+                      Text(
+
+                        widget.trackslist[widget.index].description.length<36?
+                      widget.trackslist[widget.index].description.contains("|")?
+                      widget.trackslist[widget.index].description.substring(0,
+                          widget.trackslist[widget.index].description.indexOf("|")):
+                      widget.trackslist[widget.index].description:
+                      widget.trackslist[widget.index].description.substring(0,36),style: TextStyle(
+                          fontFamily: helveticaneueregular,
+
+                          color: Colors.black54,
                           //fontSize: 10
                           fontSize:screenwidth*0.0266
-                      ),),),
+                      ),):
+                      Text(
+
+                        widget.playableslist[widget.index].track.description.length<36?
+                        widget.playableslist[widget.index].track.description.contains("|")?
+                        widget.playableslist[widget.index].track.description.substring(0,
+                            widget.playableslist[widget.index].track.description.indexOf("|")):
+                        widget.playableslist[widget.index].track.description:
+                        widget.playableslist[widget.index].track.description.substring(0,36),style: TextStyle(
+                          fontFamily: helveticaneueregular,
+
+                          color: Colors.black54,
+                          //fontSize: 10
+                          fontSize:screenwidth*0.0266
+                      ),)
+                      ,),
                   ],),),
             ])),
             Container(child:
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                GestureDetector(onTap:(){},child: Container(child: Icon(Icons.skip_previous,
+                GestureDetector(onTap:(){
+                },child: Container(child: Icon(CupertinoIcons.backward_end_fill,
                   //    size: 26,
-                  size: screenwidth*0.0693,
+                  size: screenwidth*0.0493,
                   color: Colors.black87,),)),
                 GestureDetector(onTap:()async{
-                  playmorethanonce?pauseorplay():
-                  await Styleconst.constassetsAudioPlayer.open(
-                    Audio.network("https://d14nt81hc5bide.cloudfront.net/tracks/1000-1999/300-399/1317_ysRCzwwfTnwZ5tch17VhucLE.wav",
-                      metas: Metas(
-                        title:  "Activate your higher mind",
-                        artist: "Breathing with your body",
-                        album: "Calm",
-                        image: MetasImage.asset("assets/images/anxiety.png"), //can be MetasImage.network
-                      ),
+                },child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 2),
+                  child: Icon(
 
-                    ),
-                    loopMode:loop? LoopMode.single:LoopMode.none,
-                    volume: 80,
-                    showNotification: true,
-                    //   playInBackground: PlayInBackground.enabled,
-
-                  );
-
-                  setState(() {
-             //       assetsAudioPlayer.current.value.audio.
-                 totalduration=Styleconst.constassetsAudioPlayer.current.value.audio.duration.inMilliseconds;
-//                    totalduration=
-                    playing=!playing;
-                    playmorethanonce=true;
-                  });
-                },child: Container(child: Icon(
-                  _playerState==PlayerState.play?
-                  CupertinoIcons.pause_solid:CupertinoIcons.play_arrow_solid,
+                  CupertinoIcons.pause_solid,
                   //      size: 26,
-                  size: screenwidth*0.0693,
+                  size: screenwidth*0.0653,
                   color: Colors.black87,),)),
-                GestureDetector(onTap:(){},child: Container(child: Icon(Icons.skip_next,
+                GestureDetector(onTap:(){
+
+                },child: Container(child: Icon(CupertinoIcons.forward_end_fill,
                   //        size: 26,
-                  size: screenwidth*0.0693,
+                  size: screenwidth*0.0493,
                   color: Colors.black87,),)),
 
               ],))
@@ -439,8 +433,7 @@ updateListView();
     double otherheight=screenwidth*0.048+screenwidth*0.0106+screenwidth*0.0533+screenwidth*0.05+screenwidth*0.0213+1;
 double rem=remaining-otherheight;
     return
-
-      Stack(
+Stack(
       children: [
       Image.asset('assets/images/X - 1@2x.png',fit: BoxFit.cover,width: screenheight,),
 
@@ -574,28 +567,7 @@ appbar:initialappbar,
                         ]))
                   ) ),
                 ),)),
-                Container(margin: EdgeInsets.only(
-         //           top: 34
-           top: screenarea*0.000135
-                ),
-                  child: Center(
-                    child: Column(children: [
-                      Container(child: Text(widget.title,style: TextStyle(fontFamily: helveticaneuebold,
-                      color: Colors.black87,
-                      //    fontSize: 22
-                      fontSize: screenwidth*0.0586
-                      ),),),
-                      Container(margin: EdgeInsets.only(
-                  //        top: 8
-                    top: screenarea*0.0000319
-                      ),
-                        child: Text(widget.description,style: TextStyle(fontFamily: helveticaneueregular,
-                          color: Colors.black45,
-                      //      fontSize: 13.5
-                        fontSize: screenwidth*0.036
-                        ),),)
-                    ],),
-                  ),),
+             musicplays.getcurrenttitleanddescription(context,widget.title,widget.description,widget.trackslist,widget.playableslist),
                 Container(margin: EdgeInsets.only(
                 //    top: 32,
                   top: screenarea*0.000127,
@@ -605,160 +577,17 @@ appbar:initialappbar,
                 ),
                   child: Column(
                     children: [
-                      ProgressBar(
-                        progress: Duration(milliseconds: currentprogress),
-                      //  buffered: Duration(milliseconds: 2000),
-                        total: Duration(milliseconds: totalduration),
-                        thumbRadius: 10.5,
-                        thumbColor:Color(0xff9797de),
-                        timeLabelLocation: TimeLabelLocation.below,
-                        timeLabelTextStyle: TextStyle(
-                          fontFamily: helveticaneueregular,
-                          color:Colors.black54,
-                          fontSize: 12.5
-                        ),
-                        progressBarColor: Colors.deepPurple,
-                        baseBarColor: Colors.white,
-                   //     thumbGlowRadius: 4,
-                        timeLabelType: TimeLabelType.totalTime,
-                        onSeek: (duration) {
-                          setState(() {
-                            durationchanged=duration.inMilliseconds;
-                            Styleconst.constassetsAudioPlayer.seek(Duration(milliseconds: duration.inMilliseconds));
-                          });
-                        //  print('User selected a new time: $duration');
-                        },
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(
-                        //    top: 14
-                        top: screenarea*0.0000559
-                        ),
-                       width: screenwidth,
-                        child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-    GestureDetector(
-    onTap: (){
-    setState(() {
-      loop?
-      Styleconst.constassetsAudioPlayer.setLoopMode(LoopMode.none):
-      Styleconst.constassetsAudioPlayer.setLoopMode(LoopMode.single)
-      ;
-    loop=!loop;
 
-    });
-    },
+
+    LimitedBox(
+    maxHeight:30,
     child:
-    loop?
-    ShaderMask(
-        blendMode: BlendMode.srcATop,
-        shaderCallback: (Rect bounds){
-          return LinearGradient(colors: [Color(0xff9797de),Color(0xff32386A)],
-            begin: Alignment.bottomCenter,
-            end: Alignment.topCenter,
-//                   stops: [0.0,0.5]
-          ).createShader(bounds);
-        },child:
-    SvgPicture.asset("assets/images/repeat.svg",width: 20,)):
-                          ShaderMask(
-                          blendMode: BlendMode.srcATop,
-                          shaderCallback: (Rect bounds){
-                            return LinearGradient(colors: [Color(0xff9797de),Color(0xff32386A)],
-                              begin: Alignment.bottomCenter,
-                              end: Alignment.topCenter,
-//                   stops: [0.0,0.5]
-                            ).createShader(bounds);
-                          },child:
+musicplays.playprogbar(context),
 
-SvgPicture.asset("assets/images/shuffle.svg",width: 20,))),
-
-                           IconButton(icon: Icon(Icons.skip_previous,
-                             color: Colors.black87,
-            //                 size: 30,
-                             size:screenwidth*0.08,
-                           ),
-                               onPressed: (){
-
-                           }),
-                            Container(
-              //                height: 65,
-                //              width: 65,
-                  height: screenheight*0.0974,width: screenheight*0.0974,
-                            decoration: BoxDecoration(
-                              color: Colors.white60,shape: BoxShape.circle,
-                            ),
-                              child: Center(
-                                child: IconButton(
-                                  icon: Icon(
-                                   _playerState==PlayerState.play?
-                                    CupertinoIcons.pause_solid:CupertinoIcons.play_arrow_solid,
-                                    color: Colors.black87,
-                       //             size: 30,
-                                     size:screenwidth*0.08,
-
-                                  ),onPressed: ()async{
-                               _playerState==PlayerState.stop?
-                                  await Styleconst.constassetsAudioPlayer.open(
-                                    Audio("assets/audio/2 Minute Timer - Calm and Relaxing Music.mp3",
-                                      metas: Metas(
-                                        title:  "Activate your higher mind",
-                                        artist: "Breathing with your body",
-                                        album: "Calm",
-                                        image: MetasImage.asset("assets/images/anxiety.png"), //can be MetasImage.network
-                                      ),
-
-                                    ),
-                                      loopMode:loop? LoopMode.single:LoopMode.none,
-volume: 80,
-                                      notificationSettings: NotificationSettings(
-
-                                      ),
-                                      showNotification: true,
-                                   //   playInBackground: PlayInBackground.enabled,
-
-                                  ):pauseorplay();
-
-setState(() {
-  playing=!playing;
-    playmorethanonce=true;
-});
-
-                                },
-                                ),
-                              ),
-                            ),
-                            IconButton(icon: Icon(Icons.skip_next,
-                              color: Colors.black87,
-                      //        size: 30,
-                              size:screenwidth*0.08,
-
-                            ),
-                                onPressed: (){
-
-                                }),
-                        ShaderMask(
-                          blendMode: BlendMode.srcATop,
-                          shaderCallback: (Rect bounds){
-                            return LinearGradient(colors: [Color(0xff9797de),Color(0xff32386A)],
-                              begin: Alignment.bottomCenter,
-                              end: Alignment.topCenter,
-//                   stops: [0.0,0.5]
-                            ).createShader(bounds);
-                          },child:
-                            GestureDetector(
-                                onTap: (){
-                              setState(() {
-//                                timer=true;
-  Navigator.push(context, MaterialPageRoute(builder: (context)=>
-  Timer()));
-                              });
-                                },
-                                child:
-                            SvgPicture.asset("assets/images/timer.svg"))),
-
-                          ],
-                        ),
-                      ),
+    ),
+                      musicplays.getpauseplaybutton(context,
+                          widget.index,  widget.trackid,  widget.title,  widget.description,
+                          widget.trackduration,  widget.trackurl,  widget.downloadurl,  widget.trackslist,widget.playableslist)
                   ],),
                 )
             ],),
@@ -805,10 +634,6 @@ onPanelClosed: (){
     );
 
   }
-
-  pauseorplay()async{
-    Styleconst.constassetsAudioPlayer.isPlaying.value?Styleconst.constassetsAudioPlayer.pause():Styleconst.constassetsAudioPlayer.play();
-  }
   showtracks()async{
     setState(() {
       showsuggestedtracks=true;
@@ -823,20 +648,186 @@ onPanelClosed: (){
 
   Widget suggestedtracks(BuildContext context,double rem){
     double screenwidth=MediaQuery.of(context).size.width;
+    double screenheight=MediaQuery.of(context).size.height;
+    double screenarea=screenwidth*screenheight;
+
     return Container(
+      margin: EdgeInsets.symmetric(horizontal: screenwidth*0.0586),
       height: rem,
-child: ListView(
+child: ListView.builder(
+  itemCount:
+  widget.trackslist!=null?
+  widget.trackslist.length:
+  widget.playableslist.length ,
   scrollDirection: Axis.vertical,
   physics: BouncingScrollPhysics(),
-  children: [
+  itemBuilder:(context,index){
+    return           Container(
+        width: MediaQuery.of(context).size.width*0.85,
+        //  margin: EdgeInsets.only(top:  screenarea*0.000065),
 
-    trackslist(),
-    Container(
-        margin: EdgeInsets.only(bottom: screenwidth*0.048),
         child:
-        trackslist())
+        Column(children:[
+          Slidable(
+              actionPane: SlidableDrawerActionPane(),
+              actionExtentRatio: 0.24,
+              secondaryActions: <Widget>[
 
-  ],),
+                Column(
+                    mainAxisAlignment:MainAxisAlignment.start,children:[
+                  Container(
+                    //       height: 40,width: 40,
+                      height: screenwidth*0.1066,width: screenwidth*0.1066,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.red,
+                      ),
+                      child: Center(child:Container(
+                        //   height: 4.5,
+                        height: screenwidth*0.012,
+                        width: screenwidth*0.048,
+                        //    width: 18,
+                        color: Colors.white,
+                      ),)
+                  ),
+                ])
+              ],
+              child:
+              Container(
+                  margin:EdgeInsets.only(
+                    //  bottom: 9
+                    //             bottom: 8
+                      bottom: screenwidth*0.0213
+                  ),
+                  child:
+                  Row(
+
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(3)),
+                        child: Container(
+                          height: screenwidth*0.09,width: screenwidth*0.09,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(3)),
+                          ),
+                          child: Stack(children:[
+                            CachedNetworkImage(imageUrl:
+                            widget.trackslist!=null?
+                            widget.trackslist[index].image:
+                            widget.playableslist[index].track.image
+
+                              ,fit: BoxFit.cover,),
+                            GestureDetector(
+                            onTap: (){
+                              setState(() {
+                                first=!first;
+                              });
+                            },
+                            child: Icon(first?MdiIcons.heart:FeatherIcons.heart,size: screenwidth*0.044,
+                              color:first?Colors.redAccent: Colors.white54,),
+                          ),])
+                        ),
+                      ),
+                      Container(margin: EdgeInsets.only(
+                        //   left: 11
+                          left: screenarea*0.0000439
+                      ),
+                        child: Column(crossAxisAlignment: CrossAxisAlignment.start,mainAxisAlignment:
+                        MainAxisAlignment.start,
+                          children: [
+                            Container(
+                              margin:EdgeInsets.only(
+                                //   bottom: 4
+                                  bottom: screenarea*0.0000159
+                              ),
+                              child:
+    widget.trackslist!=null?
+                              Text(widget.trackslist[index].title!=null?
+                              widget.trackslist[index].title.length>30?
+                                widget.trackslist[index].title.substring(0,30):
+                                widget.trackslist[index].title:"",style: TextStyle(
+                                  fontFamily: helveticaneuemedium,color:
+                              widget.index==index?
+                                  Color(0xff12c2e9):
+                              Colors.black87,
+                                  //fontSize: 12.5
+                                  fontSize: screenwidth*0.0333
+                              ),):
+    Text(widget.playableslist[index].track.title!=null?
+    widget.playableslist[index].track.title.length>30?
+    widget.playableslist[index].track.title.substring(0,30):
+    widget.playableslist[index].track.title:"",style: TextStyle(
+        fontFamily: helveticaneuemedium,color:
+    widget.index==index?
+    Color(0xff12c2e9):
+    Colors.black87,
+        //fontSize: 12.5
+        fontSize: screenwidth*0.0333
+    ),)
+                              ,),
+                            Container(child:
+                            widget.trackslist!=null?
+                            Text(widget.trackslist[index].description!=null?
+                            widget.trackslist[index].description.length>30?
+                            widget.trackslist[index].description.substring(0,30):
+                            widget.trackslist[index].description:"",style: TextStyle(
+                                fontFamily: helveticaneueregular,color:     widget.index==index?
+                                  Color(0xff12c2e9):Colors.black87,
+                                //fontSize: 10.5
+                                fontSize: screenwidth*0.028
+                            ),):
+                               Text(widget.playableslist[index].track.description!=null?
+                            widget.playableslist[index].track.description.length>30?
+                            widget.playableslist[index].track.description.substring(0,30):
+                            widget.playableslist[index].track.description:"",style: TextStyle(
+                                fontFamily: helveticaneueregular,color:     widget.index==index?
+                                  Color(0xff12c2e9):Colors.black87,
+                                //fontSize: 10.5
+                                fontSize: screenwidth*0.028
+                            ),),),
+                          ],),),
+                      Expanded(child:
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children:[
+                            Text(
+                              widget.trackslist!=null?
+                              widget.trackslist[index].duration
+                              :widget.playableslist[index].track.duration,
+                              textAlign:TextAlign.end,style: TextStyle(
+                                fontFamily: helveticaneuemedium,color:      widget.index==index?
+                            Color(0xff12c2e9):Colors.black87,
+                                // fontSize: 12.5
+                                fontSize: screenwidth*0.0333
+                            ),
+                            ),
+                            Container(
+                                margin: EdgeInsets.only(
+                                  //          left: 9
+                                    left: screenwidth*0.024
+                                ),
+                                child:
+                                FaIcon(
+            //                      widget.index==index?
+              //                        _playerState==PlayerState.play?
+                //                          CupertinoIcons.pause_solid:
+                                  FontAwesomeIcons.play
+                            //          :FontAwesomeIcons.play
+                                  ,
+                                  color: widget.index==index?Color(0xff12c2e9):Colors.black87,
+                                  //       size: 13.5,
+                                  size: screenwidth*0.036,
+
+                                ))
+                          ]))
+                    ],
+                  ))),
+          Divider(thickness: 1,color: Colors.grey[400],)
+        ])
+    );
+  }
+  ),
     );
   }
   Widget panel(BuildContext context,double rem){
@@ -910,324 +901,6 @@ child: ListView(
 suggestedtracks(context,rem)
 
                     ],),))));
-  }
-  Widget trackslist(){
-    double screenheight=MediaQuery.of(context).size.height;
-    double screenwidth=MediaQuery.of(context).size.width;
-    double screenarea=screenheight*screenwidth;
-    return Column(
-
-        key: UniqueKey(),
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-              width: MediaQuery.of(context).size.width*0.85,
-            //  margin: EdgeInsets.only(top:  screenarea*0.000065),
-
-              child:
-              Column(children:[
-                Slidable(
-                    actionPane: SlidableDrawerActionPane(),
-                    actionExtentRatio: 0.24,
-                    secondaryActions: <Widget>[
-                      Column(
-                          mainAxisAlignment:MainAxisAlignment.start,children:[
-                        Container(
-                          //       height: 40,width: 40,
-                            height: screenwidth*0.1066,width: screenwidth*0.1066,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.red,
-                            ),
-                            child: Center(child:Container(
-                              //   height: 4.5,
-                              height: screenwidth*0.012,
-                              width: screenwidth*0.048,
-                              //    width: 18,
-                              color: Colors.white,
-                            ),)
-                        ),
-                      ])
-                    ],
-                    child:
-                    Container(
-                        margin:EdgeInsets.only(
-                          //  bottom: 9
-                          //             bottom: 8
-                            bottom: screenarea*0.0000319
-                        ),
-                        child:
-                        Row(
-
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.all(Radius.circular(3)),
-                              child: Container(
-                                height: screenwidth*0.09,width: screenwidth*0.09,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.all(Radius.circular(3)),
-                                    image: DecorationImage(
-                                        image: AssetImage("assets/images/medi.png"),
-                                        fit: BoxFit.cover
-                                    )
-                                ),
-                                child: GestureDetector(
-                                  onTap: (){
-                                    setState(() {
-                                      first=!first;
-                                    });
-                                  },
-                                  child: Icon(first?MdiIcons.heart:FeatherIcons.heart,size: screenwidth*0.044,
-                                    color:first?Colors.redAccent: Colors.white54,),
-                                ),
-                              ),
-                            ),
-                            Container(margin: EdgeInsets.only(
-                              //   left: 11
-                                left: screenarea*0.0000439
-                            ),
-                              child: Column(crossAxisAlignment: CrossAxisAlignment.start,mainAxisAlignment:
-                              MainAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    margin:EdgeInsets.only(
-                                      //   bottom: 4
-                                        bottom: screenarea*0.0000159
-                                    ),
-                                    child: Text("Get motivated",style: TextStyle(
-                                        fontFamily: helveticaneuemedium,color: Colors.black87,
-                                        //fontSize: 12.5
-                                        fontSize: screenwidth*0.0333
-                                    ),),),
-                                  Container(child: Text("Reach your goals with this advice",style: TextStyle(
-                                      fontFamily: helveticaneueregular,color: Colors.black87,
-                                      //fontSize: 10.5
-                                      fontSize: screenwidth*0.028
-                                  ),),),
-                                ],),),
-                            Expanded(child:
-                            Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children:[
-                                  Text(
-                                    "17:24",
-                                    textAlign:TextAlign.end,style: TextStyle(
-                                      fontFamily: helveticaneuemedium,color: Colors.black87,
-                                      // fontSize: 12.5
-                                      fontSize: screenwidth*0.0333
-                                  ),
-                                  ),
-                                Container(
-                                    margin: EdgeInsets.only(
-                              //          left: 9
-                                        left: screenwidth*0.024
-                                    ),
-                                    child:
-                                FaIcon(FontAwesomeIcons.play,
-                                color: Colors.black87,
-                         //       size: 13.5,
-                                  size: screenwidth*0.036,
-
-                                ))
-                                ]))
-                          ],
-                        ))),
-                Divider(thickness: 1,color: Colors.grey[400],)
-              ])
-          ),
-
-          Container(
-              width: MediaQuery.of(context).size.width*0.85,
-              margin: EdgeInsets.only(
-                //     top: 26,left: 26,right: 26
-                //          top: 18,
-                  top: screenarea*0.0000719
-              ),
-              child:
-              Column(children:[
-                Container(
-                    margin:EdgeInsets.only(
-                      //        bottom: 8
-                        bottom: screenarea*0.0000319
-                    ),
-                    child:
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.all(Radius.circular(3)),
-                          child: Container(
-                            height: screenwidth*0.09,width: screenwidth*0.09,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.all(Radius.circular(3)),
-                                image: DecorationImage(
-                                    image: AssetImage("assets/images/pexels-karolina-grabowska-4203102.jpg"),
-                                    fit: BoxFit.cover
-                                )
-                            ),
-                            child: GestureDetector(
-                              onTap: (){
-                                setState(() {
-                                  second=!second;
-                                });
-                              },
-                              child: Icon(second?MdiIcons.heart:FeatherIcons.heart,size: screenwidth*0.044,
-                                color:second?Colors.redAccent: Colors.white54,),
-                            ),
-                          ),
-                        ),
-                        Container(margin: EdgeInsets.only(
-                          //         left: 11
-                            left: screenarea*0.0000439
-                        ),
-                          child: Column(crossAxisAlignment: CrossAxisAlignment.start,mainAxisAlignment:
-                          MainAxisAlignment.start,
-                            children: [
-                              Container(
-                                margin:EdgeInsets.only(
-                                  //  bottom: 4
-                                    bottom: screenarea*0.0000159
-                                ),
-                                child: Text("Remove negative blockage",style: TextStyle(
-                                    fontFamily: helveticaneuemedium,color: Colors.black87,
-                                    //fontSize: 12.5
-                                    fontSize: screenwidth*0.0333
-                                ),),),
-                              Container(child: Text("Erase Subconscious negative patterns",style: TextStyle(
-                                  fontFamily: helveticaneueregular,color: Colors.black54
-                                  .withOpacity(0.5),
-                                  //fontSize: 10.5
-                                  fontSize: screenwidth*0.028
-                              ),),),
-                            ],),),
-                        Expanded(child:
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children:[
-                              Text(
-                                "17:24",
-                                textAlign:TextAlign.end,style: TextStyle(
-                                  fontFamily: helveticaneuemedium,color: Colors.black87,
-                                  //fontSize: 12.5
-                                  fontSize: screenwidth*0.0333
-
-                              ),
-                              ),
-                              Container(
-                                  margin: EdgeInsets.only(
-                                  //    left: 9
-                                      left: screenwidth*0.024
-                                  ),
-                                  child:
-                                  FaIcon(FontAwesomeIcons.play,
-                                    color: Colors.black87,
-                            //        size: 13.5,
-                                    size: screenwidth*0.036,
-
-                                  ))
-                            ]))
-                      ],
-                    )),
-                Divider(thickness: 1,color: Colors.grey[400],)
-              ])
-          ),
-          Container(
-              width: MediaQuery.of(context).size.width*0.85,
-              margin: EdgeInsets.only(
-                //     top: 26,left: 26,right: 26
-                //        top: 18,
-                  top: screenarea*0.0000719
-              ),
-              child:
-              Column(children:[
-                Container(
-                    margin:EdgeInsets.only(
-                      //      bottom: 8
-                        bottom: screenarea*0.0000319
-                    ),
-                    child:
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.all(Radius.circular(3)),
-                          child: Container(
-                            height: screenwidth*0.09,width: screenwidth*0.09,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.all(Radius.circular(3)),
-                                image: DecorationImage(
-                                    image: AssetImage("assets/images/pexels-pixabay-355209.jpg"),
-                                    fit: BoxFit.cover
-                                )
-                            ),
-                            child: GestureDetector(
-                              onTap: (){
-                                setState(() {
-                                  third=!third;
-                                });
-                              },
-                              child: Icon(third?MdiIcons.heart:FeatherIcons.heart,size: screenwidth*0.044,
-                                color:third?Colors.redAccent: Colors.white54,),
-                            ),
-                          ),
-                        ),
-                        Container(margin: EdgeInsets.only(
-                          //         left: 11
-                            left: screenarea*0.0000439
-                        ),
-                          child: Column(crossAxisAlignment: CrossAxisAlignment.start,mainAxisAlignment:
-                          MainAxisAlignment.start,
-                            children: [
-                              Container(
-                                margin:EdgeInsets.only(
-                                  //  bottom: 4
-                                    bottom: screenarea*0.0000159
-                                ),
-                                child: Text("Happiness frequency",style: TextStyle(
-                                    fontFamily: helveticaneuemedium,color: Colors.black87,
-                                    //fontSize: 12.5
-                                    fontSize: screenwidth*0.0333
-                                ),),),
-                              Container(child: Text("Reach your goals with this advice",style: TextStyle(
-                                  fontFamily: helveticaneueregular,color: Colors.black54
-                                  .withOpacity(0.5),
-                                  //fontSize: 10.5
-                                  fontSize: screenwidth*0.028
-                              ),),),
-                            ],),),
-                        Expanded(child:
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children:[
-                              Text(
-                                "17:24",
-                                textAlign:TextAlign.end,style: TextStyle(
-                                  fontFamily: helveticaneuemedium,color: Colors.black87,
-                                  //fontSize: 12.5
-                                  fontSize: screenwidth*0.0333
-
-                              ),
-                              ),
-                              Container(
-                                  margin: EdgeInsets.only(
-                              //        left: 9
-                                left: screenwidth*0.024
-                                  ),
-                                  child:
-                                  FaIcon(FontAwesomeIcons.play,
-                                    color: Colors.black87,
-                            //        size: 13.5,
-                              size: screenwidth*0.036,
-                                  ))
-                            ]))
-                      ],
-                    )),
-                Divider(thickness: 1,color: Colors.grey[400],),
-              ])
-          ),
-
-        ]);
   }
 }
 class SwipeDetectorExample extends StatefulWidget {

@@ -11,8 +11,10 @@ import 'package:goodvibesoffl/models/model.dart';
 import 'package:goodvibesoffl/models/music_model.dart';
 import 'package:goodvibesoffl/services/api_service.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:provider/provider.dart';
 
 import '../../locator.dart';
+import 'MusicPlayer.dart';
 import 'music_player.dart';
 
 class PlaylistSharable extends StatefulWidget {
@@ -36,7 +38,7 @@ class _PlaylistSharableState extends State<PlaylistSharable> with SingleTickerPr
   bool playing=false;
   bool playmorethanonce=false;
   int totalduration=0;
-  List<Playable> _playlisttracks=[];
+  List<Playablee> _playlisttracks=[];
   int currentprogress=0;
   bool loop=false;
   bool pressed=false;
@@ -63,7 +65,7 @@ class _PlaylistSharableState extends State<PlaylistSharable> with SingleTickerPr
   fetchplaylisttracks()async{
     Map playlistresponse= await locator<ApiService>().getPlaylist(slug: widget.playlistslug,page: 1,perpage: 15);
     List<dynamic> playlistlist=playlistresponse['data'] as List;
-    var plays=playlistlist.map<Playable>((json) => Playable.fromJson(json));
+    var plays=playlistlist.map<Playablee>((json) => Playablee.fromJson(json));
     setState(() {
       _playlisttracks.addAll(plays);
     });
@@ -215,6 +217,39 @@ class _PlaylistSharableState extends State<PlaylistSharable> with SingleTickerPr
                                   )]),
                                   Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
+                                      GestureDetector(
+                                          onTap: (){
+                                            Navigator.push(context, MaterialPageRoute(builder: (context)
+                                            =>
+                                                MultiProvider(
+                                                    providers: [
+                                                      ChangeNotifierProvider<MusicPlays>(
+                                                        create: (_)=>MusicPlays(),
+//  builder: (_,child)
+                                                        //  => DataProvider(),
+                                                      ),
+                                                    ],
+                                                    child:
+                                                    MusicPlayer(
+                                                      navigatedfromminiplayer: false,
+                                                      trackid:_playlisttracks[0].id.toString(), index: 0,
+                                                      imageasset: "assets/images/orange_circle.png",
+                                                      title: _playlisttracks[0].track.title!=null?
+                                                      _playlisttracks[0].track.title.length>26?
+                                                      _playlisttracks[0].track.title.substring(0,26):
+                                                      _playlisttracks[0].track.title:"",
+                                                      description: _playlisttracks[0].track.title!=null?
+                                                      _playlisttracks[0].track.description.length>65?
+                                                      _playlisttracks[0].track.description.substring(0,65):
+                                                      _playlisttracks[0].track.description:""
+                                                      ,
+                                                      trackduration: _playlisttracks[0].track.duration,
+                                                      trackurl: _playlisttracks[0].track.url,
+                                                      downloadurl: _playlisttracks[0].track.trackDownloadUrl,
+                                                      playableslist: _playlisttracks,
+                                                    ))));
+                                          },
+                                          child:
                                       ClipRRect(
                                           borderRadius: BorderRadius.all(Radius.circular(6)),
                                           child:BackdropFilter(
@@ -237,7 +272,7 @@ class _PlaylistSharableState extends State<PlaylistSharable> with SingleTickerPr
                                                       color: Colors.white),),)
 
                                                 ],),
-                                              ))),
+                                              )))),
                                       Container(
                                         child: Text("00:10:00",
                                           style: TextStyle(
@@ -308,6 +343,39 @@ class _PlaylistSharableState extends State<PlaylistSharable> with SingleTickerPr
 
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
+                                            GestureDetector(
+                                                onTap:(){
+                                                  Navigator.push(context, MaterialPageRoute(builder: (context)
+                                                  =>
+                                                      MultiProvider(
+                                                          providers: [
+                                                            ChangeNotifierProvider<MusicPlays>(
+                                                              create: (_)=>MusicPlays(),
+//  builder: (_,child)
+                                                              //  => DataProvider(),
+                                                            ),
+                                                          ],
+                                                          child:
+                                                          MusicPlayer(
+                                                            navigatedfromminiplayer: false,
+                                                            trackid:_playlisttracks[index].id.toString(), index: index,
+                                                            imageasset: "assets/images/orange_circle.png",
+                                                            title: _playlisttracks[index].track.title!=null?
+                                                            _playlisttracks[index].track.title.length>26?
+                                                            _playlisttracks[index].track.title.substring(0,26):
+                                                            _playlisttracks[index].track.title:"",
+                                                            description: _playlisttracks[index].track.title!=null?
+                                                            _playlisttracks[index].track.description.length>65?
+                                                            _playlisttracks[index].track.description.substring(0,65):
+                                                            _playlisttracks[index].track.description:""
+                                                            ,
+                                                            trackduration: _playlisttracks[index].track.duration,
+                                                            trackurl: _playlisttracks[index].track.url,
+                                                            downloadurl: _playlisttracks[index].track.trackDownloadUrl,
+playableslist: _playlisttracks,
+                                                          ))));
+                                                },
+                                                child:
                                             ClipOval(child: Container(
                                               //           height: 35,width: 35,
                                               height: screenwidth*0.093,width: screenwidth*0.093,
@@ -321,7 +389,7 @@ class _PlaylistSharableState extends State<PlaylistSharable> with SingleTickerPr
                                                 //     size: 26.5 ,
                                                 size: screenwidth*0.0706,
                                               ),),
-                                            ),),
+                                            ),)),
                                             Container(margin: EdgeInsets.only(
                                               //   left: 11
                                                 left: screenarea*0.0000439

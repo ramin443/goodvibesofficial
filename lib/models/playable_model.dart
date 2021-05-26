@@ -13,7 +13,7 @@ PlayableType getPlayableType(type) {
   }
 }
 
-class Playable {
+class Playablee {
   int id;
   PlayableType type;
   int typeID;
@@ -23,7 +23,7 @@ class Playable {
   TypeObject typeObject;
   PlayablesStat stat;
 
-  Playable({
+  Playablee({
     this.id,
     this.playList,
     this.position,
@@ -34,10 +34,10 @@ class Playable {
     this.stat,
   });
 
-  factory Playable.fromJson(Map<String, dynamic> playable) {
+  factory Playablee.fromJson(Map<String, dynamic> playable) {
     PlayableType type = getPlayableType(playable['type'].toString());
     if (type == PlayableType.Playlist || type == PlayableType.Rituals) {
-      return Playable(
+      return Playablee(
         id: playable["id"],
         playList: PlayList.fromJson(playable['type_object']),
         position: playable['position'],
@@ -50,7 +50,7 @@ class Playable {
             : null,
       );
     } else {
-      return Playable(
+      return Playablee(
         id: playable["id"],
         playList: null,
         position: playable['position'],
@@ -69,8 +69,8 @@ class Playable {
     }
   }
 
-  Playable copywith({Track track, PlayList playlist}) {
-    return Playable(
+  Playablee copywith({Track track, PlayList playlist}) {
+    return Playablee(
       id: this.id,
       playList: playlist ?? this.playList,
       position: this.position,

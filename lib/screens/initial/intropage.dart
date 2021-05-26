@@ -6,6 +6,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:goodvibesoffl/constants/fontconstants.dart';
 import 'package:goodvibesoffl/screens/auth/login.dart';
 import 'package:goodvibesoffl/screens/home/base.dart';
+import 'package:goodvibesoffl/screens/sharables/MusicPlayer.dart';
+import 'package:provider/provider.dart';
 class IntroPage extends StatefulWidget {
   @override
   _IntroPageState createState() => _IntroPageState();
@@ -132,7 +134,15 @@ Column(mainAxisAlignment: MainAxisAlignment.start,
   
   Route _createRoute() {
     return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => Base(),
+      pageBuilder: (context, animation, secondaryAnimation) =>  MultiProvider(
+      providers: [
+        ChangeNotifierProvider<MusicPlays>(
+          create: (_)=>MusicPlays(),
+//  builder: (_,child)
+          //  => DataProvider(),
+        ),
+      ],
+      child:Base()),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         var begin = Offset(0.0, 1.0);
         var end = Offset.zero;

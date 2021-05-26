@@ -53,27 +53,27 @@ bool pressed=false;
     Map nightmeditationresponse= await locator<ApiService>().getPlaylist(slug: 'day_meditation',page: 1,perpage: 5);
     Map daymeditationresponse= await locator<ApiService>().getPlaylist(slug: 'night_meditation',page: 1,perpage: 5);
     List<dynamic> daymeditation=daymeditationresponse['data'] as List;
-    var daymedplays=daymeditation.map<Playable>((json) => Playable.fromJson(json));
+    var daymedplays=daymeditation.map<Playablee>((json) => Playablee.fromJson(json));
     setState(() {
       meditatelist.addAll(daymedplays);
     });
     List<dynamic> nightmeditation=nightmeditationresponse['data'] as List;
-    var nightmedplays=nightmeditation.map<Playable>((json) => Playable.fromJson(json));
+    var nightmedplays=nightmeditation.map<Playablee>((json) => Playablee.fromJson(json));
     setState(() {
       meditatelist.addAll(nightmedplays);
     });
     List<dynamic> meditationlvl5=medilvl5['data'] as List;
-    var medl5plays=meditationlvl5.map<Playable>((json) => Playable.fromJson(json));
+    var medl5plays=meditationlvl5.map<Playablee>((json) => Playablee.fromJson(json));
     setState(() {
       meditatelist.addAll(medl5plays);
     });
     List<dynamic> meditationlvl6=medilvl6['data'] as List;
-    var medl6plays=meditationlvl6.map<Playable>((json) => Playable.fromJson(json));
+    var medl6plays=meditationlvl6.map<Playablee>((json) => Playablee.fromJson(json));
     setState(() {
       meditatelist.addAll(medl6plays);
     });
     List<dynamic> meditationlvl7=medilvl7['data'] as List;
-    var medl7plays=meditationlvl7.map<Playable>((json) => Playable.fromJson(json));
+    var medl7plays=meditationlvl7.map<Playablee>((json) => Playablee.fromJson(json));
     setState(() {
       meditatelist.addAll(medl7plays);
     });

@@ -13,9 +13,11 @@ import 'package:goodvibesoffl/constants/fontconstants.dart';
 import 'package:goodvibesoffl/favorites/favoritesdbhelper.dart';
 import 'package:goodvibesoffl/favorites/favoritetrackmodel.dart';
 import 'package:goodvibesoffl/screens/premium/getpremium.dart';
+import 'package:goodvibesoffl/screens/sharables/MusicPlayer.dart';
 import 'package:goodvibesoffl/screens/sharables/music_player.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:goodvibesoffl/constants/styleconstants.dart'as Styleconst;
+import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
 
 class Library extends StatefulWidget {
@@ -95,6 +97,8 @@ updateListView();
   }
   @override
   Widget build(BuildContext context) {
+    final musicplays=Provider.of<MusicPlays>(context);
+
     if (favoritesList == null) {
       favoritesList = List<FavoriteTrackModel>();
       updateListView();
@@ -110,135 +114,7 @@ updateListView();
     return
       Scaffold(
           floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-          floatingActionButton:                                _playerState==PlayerState.stop?
-          SizedBox(height: 0,):
-          Container(
-              height: screenwidth*0.2026,
-              width: screenwidth,
-              child:  Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children:[
-                    ProgressBar(
-                      progress: Duration(milliseconds: currentprogress),
-                      //  buffered: Duration(milliseconds: 2000),
-                      total: Duration(milliseconds: totalduration),
-                      thumbRadius: 1.8,
-                      thumbColor:Colors.white,
-                      timeLabelLocation: TimeLabelLocation.none,
-                      progressBarColor: Color(0xff12c2e9),
-                      baseBarColor:  Colors.transparent,
-                      barHeight: 1.8,
-
-
-                    ),
-
-                    GestureDetector(
-                        onVerticalDragStart: (v){
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>
-                              MusicPlayer(imageasset: "assets/images/medi.png",
-                                  title: "Get Motivated",
-                                  description: "Reach your goals with this advice")));
-                        },
-                        onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>
-                              MusicPlayer(imageasset: "assets/images/medi.png",
-                                  title: "Get Motivated",
-                                  description: "Reach your goals with this advice")));
-                        },
-                        child:
-                        ClipRect(child:
-                        BackdropFilter(
-                            filter: ImageFilter.blur(sigmaX: 10,sigmaY:10),
-                            child:Container(
-                              color: Colors.white.withOpacity(0.1),
-                              //  margin: EdgeInsets.only(left: 40),
-                              padding: EdgeInsets.symmetric(
-                                //         vertical: 8
-                                  vertical: screenwidth*0.02133
-                                  ,horizontal: 17.5
-                              ),
-                              width: screenwidth,
-
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Container(child:Row(children:[
-                                    Container(child:
-                                    ClipRRect(                borderRadius: BorderRadius.all(Radius.circular(6)),
-                                        child:
-                                        Container(
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.all(Radius.circular(6))
-                                          ),
-                                          //     height: 54,width: 54,
-                                          height:  screenwidth*0.124,width:  screenwidth*0.124,
-                                          child: Image.asset("assets/images/orange_circle.png",fit: BoxFit.cover,),
-                                        ))),
-                                    Container(
-                                      margin: EdgeInsets.only(
-                                        //           left: 16
-                                          left: screenwidth*0.0426     ),
-                                      //  height: 54,
-                                      height: screenwidth*0.144,
-                                      child: Column(crossAxisAlignment:CrossAxisAlignment.start,
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Container(child: Text("Get Motivated",style: TextStyle(
-                                              fontFamily: helveticaneuebold,color: Colors.black87,fontSize: screenwidth*0.036
-                                          ),),),
-                                          Container(
-                                            margin: EdgeInsets.only(top: 5),
-                                            child: Text("Reach your goals with this advice",style: TextStyle(
-                                                fontFamily: helveticaneueregular,color: Colors.black54,fontSize: screenwidth*0.0266
-                                            ),),),
-                                        ],),)])),
-                                  Container(child:
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      GestureDetector(onTap:(){},child: Container(child: Icon(Icons.skip_previous,
-                                        //    size: 26,
-                                        size: screenwidth*0.0693,
-                                        color: Colors.black87,),)),
-                                      GestureDetector(onTap:()async{
-                                        _playerState==PlayerState.stop?
-                                        await Styleconst.constassetsAudioPlayer.open(
-                                          Audio("assets/audio/2 Minute Timer - Calm and Relaxing Music.mp3",
-                                            metas: Metas(
-                                              title:  "test1",
-                                              artist: "Florent Champigny",
-                                              album: "CountryAlbum",
-                                              image: MetasImage.asset("assets/images/orange_circle.png"), //can be MetasImage.network
-                                            ),
-
-                                          ),
-                                          loopMode:loop? LoopMode.single:LoopMode.none,
-                                          volume: 80,
-                                          showNotification: true,
-                                          //   playInBackground: PlayInBackground.enabled,
-
-                                        ):pauseorplay();
-
-                                        setState(() {
-                                          playing=!playing;
-                                          playmorethanonce=true;
-                                        });
-                                      },child: Container(child: Icon(
-                                        _playerState==PlayerState.play?
-                                        CupertinoIcons.pause_solid:CupertinoIcons.play_arrow_solid,
-                                        //      size: 26,
-                                        size: screenwidth*0.0693,
-                                        color: Colors.black87,),)),
-                                      GestureDetector(onTap:(){},child: Container(child: Icon(Icons.skip_next,
-                                        //        size: 26,
-                                        size: screenwidth*0.0693,
-                                        color: Colors.black87,),)),
-
-                                    ],))
-                                ],
-                              ),
-                            ))))])),
+          floatingActionButton:   musicplays.getminiplayer(context),
         backgroundColor: Colors.transparent,
         appBar: AppBar(
             automaticallyImplyLeading: false,

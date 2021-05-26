@@ -17,7 +17,7 @@ class HomepageDynamicData {
   int position;
   PlayablesStat stat;
   TypeObject typeObject;
-  List<Playable> playables;
+  List<Playablee> playables;
 
   HomepageDynamicData({
     this.id,
@@ -31,10 +31,10 @@ class HomepageDynamicData {
   factory HomepageDynamicData.fromJson(Map<String, dynamic> json) {
     DynamicDataType playableType = getDynamicDataType(json['type']);
 
-    var playables = List<Playable>.from(json["playables"] == null
+    var playables = List<Playablee>.from(json["playables"] == null
         ? []
         : json["playables"].map(
-          (a) => Playable.fromJson(a),
+          (a) => Playablee.fromJson(a),
     ));
 
     for (int i = 0; i < playables.length; i++) {

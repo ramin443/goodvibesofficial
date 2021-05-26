@@ -133,7 +133,7 @@ class _ViewAllPageState extends State<ViewAllPage> {
                                   : ScreenUtil().setWidth(290),
                               children: List<Widget>.generate(_tracks.length,
                                       (index) {
-                                    Playable item = _tracks[index];
+                                        Playablee item = _tracks[index];
 
                                     return MeditateVerticalCard(playable: item);
                                   }),

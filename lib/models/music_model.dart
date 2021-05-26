@@ -292,8 +292,8 @@ class Track extends Equatable {
     );
   }
 
-  static Playable getTrackPlayable(Track track) {
-    return Playable(
+  static Playablee getTrackPlayable(Track track) {
+    return Playablee(
         id: track.id,
         playList: null,
         position: 0,

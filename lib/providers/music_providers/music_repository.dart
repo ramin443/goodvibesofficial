@@ -26,9 +26,9 @@ class MusicProvider {
   List<Track> _playlist = [];
   List<Track> _userRecomendTracks = [];
   List<HomepageDynamicData> _sleep = [];
-  List<Playable> _viewAllUpdatedTracks = [];
+  List<Playablee> _viewAllUpdatedTracks = [];
 
-  List<Playable> _meditateHomePlayableList = [];
+  List<Playablee> _meditateHomePlayableList = [];
 
   bool _hasTrendingError = false;
   bool _hasLatestError = false;
@@ -338,7 +338,7 @@ class MusicProvider {
 
       ///
 
-      var a = rsp.map<Playable>((json) => Playable.fromJson(json));
+      var a = rsp.map<Playablee>((json) => Playablee.fromJson(json));
       if (_viewAllCurrentPage == 0) _viewAllUpdatedTracks.clear();
       _viewAllUpdatedTracks.addAll(a);
 
@@ -357,7 +357,7 @@ class MusicProvider {
     }
   }
 
-  addItemsIntoEmptyViewAllList(List<Playable> items) {
+  addItemsIntoEmptyViewAllList(List<Playablee> items) {
     _viewAllUpdatedTracks.addAll(items);
   }
 
@@ -384,7 +384,7 @@ class MusicProvider {
       var res = response["data"] as List;
       //    _meditateHomePlayableList.clear();
       _meditateHomePlayableList =
-          res.map<Playable>((e) => Playable.fromJson(e)).toList();
+          res.map<Playablee>((e) => Playablee.fromJson(e)).toList();
     }
   }
 
@@ -456,9 +456,9 @@ class MusicProvider {
   List<Track> get playlist => _playlist;
   List<Track> get userRecomendTracks => _userRecomendTracks;
   List<HomepageDynamicData> get sleep => _sleep;
-  List<Playable> get viewAllUpdatedTracks => _viewAllUpdatedTracks;
+  List<Playablee> get viewAllUpdatedTracks => _viewAllUpdatedTracks;
 
-  List<Playable> get meditateHomePlayableList => _meditateHomePlayableList;
+  List<Playablee> get meditateHomePlayableList => _meditateHomePlayableList;
   List<HomepageDynamicData> get dynamicHomepageList => _dynamicHomepageList;
 
   bool get hasTrendingErrr => _hasTrendingError;

@@ -1,5 +1,6 @@
 
 
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
@@ -17,6 +18,8 @@ import 'package:goodvibesoffl/screens/plays/meditate.dart';
 import 'package:goodvibesoffl/screens/sharables/music_player.dart';
 import 'package:goodvibesoffl/screens/sharables/single_playlist.dart';
 import 'package:intl/intl.dart';
+import 'package:goodvibesoffl/constants/styleconstants.dart'as Styleconst;
+
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:shimmer/shimmer.dart';
 class Home extends StatefulWidget {
@@ -25,11 +28,33 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  int totalduration=0;
+  PlayerState _playerState;
+  int currentprogress=0;
   String currenttimeofday='Morning';
   @override
   void initState() {
     super.initState();
  // timeofdaygreeting();
+  }
+  addcurrentaudiolistener()async{
+
+    Styleconst.constassetsAudioPlayer.currentPosition.listen((audioposition) {
+      setState(() {
+        currentprogress=audioposition.inMilliseconds;
+      });
+    });
+    Styleconst.constassetsAudioPlayer.playerState.listen((event) {
+      _playerState=event;
+    });
+    Styleconst.constassetsAudioPlayer.current.listen((event) {
+      setState(() {
+        totalduration= event.audio.duration.inMilliseconds;
+      });
+    });
+  }
+  pauseorplay()async{
+    Styleconst.constassetsAudioPlayer.isPlaying.value?Styleconst.constassetsAudioPlayer.pause():Styleconst.constassetsAudioPlayer.play();
   }
   emptycode(){}
   @override

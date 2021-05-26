@@ -848,11 +848,13 @@ await _setloginstatus();
   }
   apitracktest()async{
     List<Categories> _categories = [];
-    List<Playable> _track=[];
+    List<Playablee> _track=[];
     List<Track> _tracks=[];
 
     List<Genre> _genres=[];
     List<PlayList> _playlis=[];
+    Map recentlyplayedresponse=await locator<ApiService>().getAllPlayHistory(page: 1,perpage: 30);
+print("recentlyplayedresponse"+recentlyplayedresponse.values.toString());
     Map meditationresponse=await locator<ApiService>().getMeditate(page: 1,perpage: 30);
 
     Map recenttracksresponse=await locator<ApiService>().getRecentTracks(page: 1,perpage: 30);
@@ -866,14 +868,17 @@ await _setloginstatus();
     //  Map tracksfromgenre= await locator<ApiService>().getGenreTracks(id: 25,page: 1,perpage: 4);
 //    List<dynamic> trckfrmgnr = tracksfromgenre['data'] as List;
     print('playdata');
+    List<dynamic> recentplayedtrackslist=recentlyplayedresponse['data'] as List;
+    var rectrackstra = recentplayedtrackslist.map<Track>((json) => Track.fromJson(json));
+    _tracks.addAll(rectrackstra);
 
     List<dynamic> meditationtrackslist=meditationresponse['data'] as List;
-    var medittratra = meditationtrackslist.map<Playable>((json) => Playable.fromJson(json));
-    _track.addAll(medittratra);
+    var medittratra = meditationtrackslist.map<Playablee>((json) => Playablee.fromJson(json));
+ //   _track.addAll(medittratra);
 
     List<dynamic> recenttrackslist=recenttracksresponse['data'] as List;
     var recenttra = recenttrackslist.map<Track>((json) => Track.fromJson(json));
-    _tracks.addAll(recenttra);
+//    _tracks.addAll(recenttra);
 
     List<dynamic> playlistlist=playlist['data'] as List;
     var p = playlistlist.map<PlayList>((json) => PlayList.fromJson(json));
@@ -890,10 +895,10 @@ await _setloginstatus();
  //   print(genres["data"]);
  //   _tracks.addAll(t);
     for(int i=0;i<=_track.length-1;i++){
-      print("playlisttrack id:"+(_track[i].id).toString() );
-      print("playlisttrack name"+_track[i].typeObject.title );
-      print("playlisttrack description:"+(_track[i].typeObject.description).toString() );
-      print("playlisttrack gid:"+(_track[i].track.url).toString() );
+      print("recentlyplayedtrack id:"+(_track[i].id).toString() );
+      print("recentlyplayed name"+_track[i].typeObject.title );
+      print("recentlyplayed description:"+(_track[i].typeObject.description).toString() );
+      print("recentlyplayed gid:"+(_track[i].track.url).toString() );
     }
 
 

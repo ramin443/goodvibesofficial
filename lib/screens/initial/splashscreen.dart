@@ -10,6 +10,8 @@ import 'package:goodvibesoffl/constants/styleconstants.dart';
 import 'package:goodvibesoffl/screens/home/base.dart';
 import 'package:goodvibesoffl/screens/initial/intropage.dart';
 import 'package:goodvibesoffl/screens/initial/sayhi.dart';
+import 'package:goodvibesoffl/screens/sharables/MusicPlayer.dart';
+import 'package:provider/provider.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_animations/simple_animations.dart';
@@ -93,7 +95,17 @@ Future.delayed(Duration(seconds: 7),navigatetohomescreen);
   }
   Route _createRoute() {
     return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => loggedin==1?Base():SayHi(),
+      pageBuilder: (context, animation, secondaryAnimation) => loggedin==1?
+      MultiProvider(
+          providers: [
+            ChangeNotifierProvider<MusicPlays>(
+              create: (_)=>MusicPlays(),
+//  builder: (_,child)
+              //  => DataProvider(),
+            ),
+          ],
+          child:
+      Base()):SayHi(),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         var begin = Offset(0.0, 1.0);
         var end = Offset.zero;
@@ -111,6 +123,7 @@ Future.delayed(Duration(seconds: 7),navigatetohomescreen);
   emptycode(){}
   @override
   Widget build(BuildContext context) {
+ //   final musicplays=Provider.of<MusicPlays>(context);
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,

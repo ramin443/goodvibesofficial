@@ -50,7 +50,7 @@ checkIfOffline() async {
   return false;
 }
 void navigateToMusicIntermediatePage({
-  @required Playable playable,
+  @required Playablee playable,
   @required String sourcePage,
 }) {
   final context = locator<NavigationService>().navigationKey.currentContext;
