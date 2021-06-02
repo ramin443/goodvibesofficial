@@ -11,6 +11,7 @@ import 'package:goodvibesoffl/screens/home/base.dart';
 import 'package:goodvibesoffl/screens/initial/intropage.dart';
 import 'package:goodvibesoffl/screens/initial/sayhi.dart';
 import 'package:goodvibesoffl/screens/sharables/MusicPlayer.dart';
+import 'package:goodvibesoffl/screens/sharables/playlist_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -100,6 +101,11 @@ Future.delayed(Duration(seconds: 7),navigatetohomescreen);
           providers: [
             ChangeNotifierProvider<MusicPlays>(
               create: (_)=>MusicPlays(),
+//  builder: (_,child)
+              //  => DataProvider(),
+            ),
+            ChangeNotifierProvider<PlayListFunctions>(
+              create: (_)=>PlayListFunctions(),
 //  builder: (_,child)
               //  => DataProvider(),
             ),
