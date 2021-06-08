@@ -85,7 +85,7 @@ dependencies:
   device_preview:
   flutter_spinkit:
   logger:
-  flutter_svg: ^0.18.0
+  flutter_svg: ^0.22.0
   shimmer:
   flutter_screenutil: ^2.3.1
   flutter_vector_icons:
@@ -110,6 +110,9 @@ dependencies:
   assets_audio_player: ^2.0.13+1
 
   flutter_downloader: ^1.5.2
+
+  firebase_crashlytics: ^0.2.4
+
 
 dev_dependencies:
   flutter_test:

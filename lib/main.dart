@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -29,13 +31,19 @@ BehaviorSubject<RewardVideoStatus>();
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
 await FlutterDownloader.initialize(debug: true);
+  await Firebase.initializeApp();
   await setupLocator(
     selectNotificationSubject,
     appThemeDataStream,
     rewardedStatusStream,
   );
 
-  runApp(MyApp());
+  runZonedGuarded(() {
+    runApp(MyApp());
+  }, (error, stackTrace) {
+    print('runZonedGuarded: Caught error in my root zone.');
+    FirebaseCrashlytics.instance.recordError(error, stackTrace);
+  });
 }
 
 class MyApp extends StatelessWidget {
