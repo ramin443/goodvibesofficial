@@ -3,40 +3,37 @@ import 'dart:async';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
-import 'package:goodvibesoffl/providertest/newtest.dart';
-import 'package:goodvibesoffl/screens/auth/login.dart';
-import 'package:goodvibesoffl/screens/home/base.dart';
-import 'package:goodvibesoffl/screens/initial/goals.dart';
 import 'package:goodvibesoffl/screens/initial/splashscreen.dart';
-import 'package:goodvibesoffl/screens/plays/meditate.dart';
-import 'package:goodvibesoffl/screens/sharables/MusicPlayer.dart';
 import 'package:goodvibesoffl/theme.dart';
-import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'locator.dart';
+
 final BehaviorSubject<String> selectNotificationSubject =
-BehaviorSubject<String>();
+    BehaviorSubject<String>();
 
 final BehaviorSubject<ThemeData> appThemeDataStream =
-BehaviorSubject<ThemeData>()..add(defaultTheme);
+    BehaviorSubject<ThemeData>()..add(defaultTheme);
 
 final BehaviorSubject<RewardVideoStatus> rewardedStatusStream =
-BehaviorSubject<RewardVideoStatus>();
+    BehaviorSubject<RewardVideoStatus>();
 
-
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-await FlutterDownloader.initialize(debug: true);
+  await FlutterDownloader.initialize(debug: true);
   await Firebase.initializeApp();
   await setupLocator(
     selectNotificationSubject,
     appThemeDataStream,
     rewardedStatusStream,
   );
+  var res = await FirebasePerformance.instance.isPerformanceCollectionEnabled();
+
+  if (!res) FirebasePerformance.instance.setPerformanceCollectionEnabled(true);
 
   runZonedGuarded(() {
     runApp(MyApp());
@@ -56,11 +53,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-  //    routes: <String,WidgetBuilder>{
-    //    '/':(context)=>Base()
-     home:SplashScreen(),
+      //    routes: <String,WidgetBuilder>{
+      //    '/':(context)=>Base()
+      home: SplashScreen(),
 
-  //    home: Base(),
+      //    home: Base(),
     );
   }
 }
@@ -164,6 +161,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     ),
   ];
+
   AssetsAudioPlayer get _assetsAudioPlayer => AssetsAudioPlayer.withId('music');
   final List<StreamSubscription> _subscriptions = [];
 
@@ -186,7 +184,9 @@ class _MyHomePageState extends State<MyHomePage> {
     }));
     openPlayer();
   }
-bool playedonce=false;
+
+  bool playedonce = false;
+
   void openPlayer() async {
     await _assetsAudioPlayer.open(
       Playlist(audios: audios, startIndex: 0),
@@ -208,9 +208,10 @@ bool playedonce=false;
 
   int _counter = 0;
   final assetsAudioPlayer = AssetsAudioPlayer();
-bool played=false;
-bool showplayicon=false;
-int playtimes=0;
+  bool played = false;
+  bool showplayicon = false;
+  int playtimes = 0;
+
   void _incrementCounter() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
@@ -224,58 +225,61 @@ int playtimes=0;
 
   @override
   Widget build(BuildContext context) {
-      return Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          centerTitle: true,
-          backgroundColor: Colors.transparent,
-elevation: 0,
-actions: [
-  IconButton(icon: Icon(
-    assetsAudioPlayer.isPlaying.value?CupertinoIcons.pause_solid:
-    CupertinoIcons.play_arrow_solid,
-  color: Colors.black,size: 30,
-  ), onPressed: ()async{
-    playedonce?pauseorplay():initiateplay();
-    setState(() {
-  playedonce=true;
-showplayicon=!showplayicon;
-});
-  })
-],
-title: Text("HERO",style: TextStyle(
-  fontSize: 20,
-  color: Colors.black
-),),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: [
+          IconButton(
+              icon: Icon(
+                assetsAudioPlayer.isPlaying.value
+                    ? CupertinoIcons.pause_solid
+                    : CupertinoIcons.play_arrow_solid,
+                color: Colors.black,
+                size: 30,
+              ),
+              onPressed: () async {
+                playedonce ? pauseorplay() : initiateplay();
+                setState(() {
+                  playedonce = true;
+                  showplayicon = !showplayicon;
+                });
+              })
+        ],
+        title: Text(
+          "HERO",
+          style: TextStyle(fontSize: 20, color: Colors.black),
         ),
-      );
+      ),
+    );
   }
-  initiateplay()async{
+
+  initiateplay() async {
     try {
       await assetsAudioPlayer.open(
-        Audio.network("https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3",
-          metas: Metas(
-            title:  "Country",
-            artist: "Florent Champigny",
-            album: "CountryAlbum",
-            image: MetasImage.asset("assets/images/country.jpg"), //can be MetasImage.network
+          Audio.network(
+            "https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3",
+            metas: Metas(
+              title: "Country",
+              artist: "Florent Champigny",
+              album: "CountryAlbum",
+              image: MetasImage.asset(
+                  "assets/images/country.jpg"), //can be MetasImage.network
+            ),
           ),
-        ),
-        showNotification: true,
-playInBackground: PlayInBackground.enabled,
-
-        notificationSettings: NotificationSettings(
-
-        )
-      );
+          showNotification: true,
+          playInBackground: PlayInBackground.enabled,
+          notificationSettings: NotificationSettings());
     } catch (t) {
       //mp3 unreachable
     }
   }
-  pauseorplay()async{
 
-    showplayicon?await assetsAudioPlayer.play():
-      await assetsAudioPlayer.pause();
-
+  pauseorplay() async {
+    showplayicon
+        ? await assetsAudioPlayer.play()
+        : await assetsAudioPlayer.pause();
   }
 }

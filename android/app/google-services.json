@@ -79,6 +79,14 @@
           }
         },
         {
+          "client_id": "606043473275-tloin9a3f1ri818itsfmkjiv4ujgklqt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.goodvibes",
+            "certificate_hash": "d92da4803ef755efd2e7da74f5de13e50e7830b0"
+          }
+        },
+        {
           "client_id": "606043473275-v2v1a6hjfc4f3s6o5nnpebtd6f0d4t8t.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
