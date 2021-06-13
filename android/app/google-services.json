@@ -55,14 +55,6 @@
           }
         },
         {
-          "client_id": "606043473275-gjtfi4jcav04r45i33ea8lh8mbl1reet.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.goodvibes",
-            "certificate_hash": "7552b1ea50f0ff9d014e81af50fdac0f5e941d29"
-          }
-        },
-        {
           "client_id": "606043473275-kouk62s2dtn8kslq8m1ae7ah10bav0bf.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -76,14 +68,6 @@
           "android_info": {
             "package_name": "com.goodvibes",
             "certificate_hash": "1365c47917219d5493f2b29e5ac8986c5d226c3a"
-          }
-        },
-        {
-          "client_id": "606043473275-tloin9a3f1ri818itsfmkjiv4ujgklqt.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.goodvibes",
-            "certificate_hash": "d92da4803ef755efd2e7da74f5de13e50e7830b0"
           }
         },
         {
@@ -191,22 +175,6 @@
         }
       },
       "oauth_client": [
-        {
-          "client_id": "606043473275-lpv815b6n7pddec863k25fibr7j60i8f.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.goodvibesoffl",
-            "certificate_hash": "f7c80ac803c0dcecd3e06ad77183329f31f89026"
-          }
-        },
-        {
-          "client_id": "606043473275-rslj51cq2ui16n5i2fbpe9eegp8pvi1t.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.goodvibesoffl",
-            "certificate_hash": "63ae039a1a971e715adcf41dfb01941b8d0b533e"
-          }
-        },
         {
           "client_id": "606043473275-o4jokb42r8euhge05q9ke4uils7a2itg.apps.googleusercontent.com",
           "client_type": 3

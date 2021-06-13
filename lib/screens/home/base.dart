@@ -28,7 +28,6 @@ import 'package:goodvibesoffl/screens/premium/getpremium.dart';
 import 'package:goodvibesoffl/screens/sharables/MusicPlayer.dart';
 import 'package:goodvibesoffl/screens/sharables/mini_player.dart';
 import 'package:goodvibesoffl/screens/sharables/music_player.dart';
-import 'package:goodvibesoffl/screens/sharables/playlist_provider.dart';
 import 'package:goodvibesoffl/screens/sharables/playlist_sharable.dart';
 import 'package:goodvibesoffl/screens/sharables/single_playlist.dart';
 import 'package:goodvibesoffl/services/api_service.dart';
@@ -1422,22 +1421,7 @@ child:                                    ListView.builder(
                         ],))]))
 
           ],
-        ))):currentindex==1?
-        MultiProvider(
-            providers: [
-              ChangeNotifierProvider<MusicPlays>(
-                create: (_)=>MusicPlays(),
-//  builder: (_,child)
-                //  => DataProvider(),
-              ),
-              ChangeNotifierProvider<PlayListFunctions>(
-                create: (_)=>PlayListFunctions(),
-//  builder: (_,child)
-                //  => DataProvider(),
-              ),
-            ],
-            child:
-        Library()):
+        ))):currentindex==1?Library():
         Profile(), // new
 
         bottomNavigationBar: BottomNavigationBar(

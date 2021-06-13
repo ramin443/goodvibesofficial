@@ -2,12 +2,10 @@ import 'dart:io';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:firebase_admob/firebase_admob.dart';
-
 //import 'package:firebase_admob/firebase_admob.dart';
 //import 'package:firebase_analytics/firebase_analytics.dart';
 //import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,7 +14,6 @@ import 'package:goodvibesoffl/bloc/common_bloc/common_event.dart';
 import 'package:goodvibesoffl/bloc/dynamic_homepage/dynamichomepagewidget_bloc.dart';
 import 'package:goodvibesoffl/bloc/rituals/rituals_bloc.dart';
 import 'package:goodvibesoffl/bloc/settings/settings_bloc.dart';
-
 //import 'package:flutter_native_admob/native_admob_options.dart';
 import 'package:goodvibesoffl/models/music_model.dart';
 import 'package:goodvibesoffl/models/playable_model.dart';
@@ -36,11 +33,11 @@ import 'package:goodvibesoffl/utils/strings/string_constants.dart';
 import 'package:goodvibesoffl/widgets/common_widgets/common_widgets_methods.dart';
 import 'package:goodvibesoffl/widgets/dialog_boxes.dart';
 import 'package:goodvibesoffl/widgets/music_timer_dialog.dart';
-import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:path/path.dart';
 
 import '../config.dart';
 import '../locator.dart';
@@ -52,7 +49,6 @@ checkIfOffline() async {
   }
   return false;
 }
-
 void navigateToMusicIntermediatePage({
   @required Playablee playable,
   @required String sourcePage,
@@ -92,7 +88,6 @@ void navigateToMusicIntermediatePage({
     );
   }
 }
-
 void checkTrackPaidStatusAndNavigate({
   @required Track track,
   @required bool isPaidUser,
@@ -156,7 +151,6 @@ void checkTrackPaidStatusAndNavigate({
     }
   }
 }
-
 getPercentageFromDurations({double current, double total}) {
   // List _currentList = current.split(":");
   // List _totalList = total.split(":");
@@ -231,13 +225,9 @@ int getCurrentDayForRituals(PlayList playlist) {
 recordCrashlyticsLog(String value) {
 //  FirebaseCrashlytics.instance.log(value);
 }
-
 void dPrint(message) {
-  if (!kReleaseMode) {
-    print(message);
-  }
+  // print(message);
 }
-
 MobileAdTargetingInfo adtargetingInfo = MobileAdTargetingInfo(
   keywords: <String>['music', 'meditate'],
   childDirected: true,
@@ -253,7 +243,6 @@ InterstitialAd createInterstitialAd() {
     },
   );
 }
-
 showOfflineSnackBar({@required BuildContext context}) {
   Scaffold.of(context).showSnackBar(
     SnackBar(
@@ -264,7 +253,6 @@ showOfflineSnackBar({@required BuildContext context}) {
     ),
   );
 }
-
 showDialogBox({
   @required String dialogType,
   String customTitle,
@@ -308,8 +296,8 @@ showDialogBox({
                 recordAnalyticsToSubscriptionPage(
                     source: "cannot download dialog");
 
-                Navigator.push(
-                    context, CupertinoPageRoute(builder: (_) => GetPremium()));
+                Navigator.push(context,
+                    CupertinoPageRoute(builder: (_) => GetPremium()));
               },
               cancelActionTitle: 'CANCEL',
               title: customTitle ?? unpaid_user_download_message,
@@ -372,9 +360,9 @@ showDialogBox({
                   }
                 } catch (e, s) {
                   showToastMessage(message: "Unable to open playstore");
-                  //         FirebaseCrashlytics.instance.recordError(e, s,
-                  //           reason:
-                  //         "Unable to open playstore for playService update");
+         //         FirebaseCrashlytics.instance.recordError(e, s,
+           //           reason:
+             //         "Unable to open playstore for playService update");
                 }
               },
             );
@@ -391,9 +379,9 @@ showDialogBox({
                   }
                 } catch (e, s) {
                   showToastMessage(message: "Unable to open playstore");
-                  //        FirebaseCrashlytics.instance.recordError(e, s,
-                  //          reason:
-                  //        "Unable to open playstore for playService update");
+          //        FirebaseCrashlytics.instance.recordError(e, s,
+            //          reason:
+              //        "Unable to open playstore for playService update");
                 }
               },
             );
@@ -401,7 +389,7 @@ showDialogBox({
           case cannotSaveMoreMix:
             return DialogBoxTwoActions(
               title:
-                  "Free users can save only 2 mixes.\nSubscribe to save more. ",
+              "Free users can save only 2 mixes.\nSubscribe to save more. ",
               cancelActionTitle: "Cancel",
               proceedActionTitle: "Subscribe",
               alignType: DialogBoxAlignType.COLUMN,
@@ -409,10 +397,8 @@ showDialogBox({
                 recordAnalyticsToSubscriptionPage(
                     source: "try to save more than 2 coposition mix");
                 locator<NavigationService>().navigationKey.currentState.pop();
-                locator<NavigationService>()
-                    .navigationKey
-                    .currentState
-                    .push(CupertinoPageRoute(builder: (_) => GetPremium()));
+                locator<NavigationService>().navigationKey.currentState.push(
+                    CupertinoPageRoute(builder: (_) => GetPremium()));
               },
               cancelAction: () {
                 locator<NavigationService>().navigationKey.currentState.pop();
@@ -421,15 +407,14 @@ showDialogBox({
 
             break;
 
-          // case premiumTrack:
-          //   locator<NavigationService>()
-          //       .navigationKey
-          //       .currentState
-          //       .push(CupertinoPageRoute(builder: (_) => SubscriptionPage()));
+        // case premiumTrack:
+        //   locator<NavigationService>()
+        //       .navigationKey
+        //       .currentState
+        //       .push(CupertinoPageRoute(builder: (_) => SubscriptionPage()));
         }
       });
 }
-
 getTextSize(String text, TextStyle style) {
   final TextPainter painter = TextPainter(
     text: TextSpan(text: text, style: style),
@@ -454,18 +439,17 @@ getSecondsFromDurationString(String duration) {
     return 0.0;
   }
 }
-
 recordNavigationAnalytics(
     {String source, String destination, String pageEventName}) {
 //  final _fbEvent = FacebookAppEvents();
-}
 
+
+}
 recordAnalyticsToSubscriptionPage({String source}) {
-  // FirebaseAnalytics().logEvent(name: "subsribe_page_visit", parameters: {
-  // "navigation_from": source,
-  // });
+ // FirebaseAnalytics().logEvent(name: "subsribe_page_visit", parameters: {
+   // "navigation_from": source,
+ // });
 }
-
 navigateToSinglePlayerOnly(
     BuildContext context, bool fromPlayList, String analyitcsString) {
   Navigator.of(context).push(CupertinoPageRoute(
@@ -477,14 +461,13 @@ navigateToSinglePlayerOnly(
     settings: RouteSettings(name: analyitcsString),
   ));
 }
-
 Future<bool> checkIfMusicFileExists(filename) async {
   // var downloadPath = await getDatabasesPath();
   // var downloadedLocation = downloadPath + '/$filename';
   Directory directory = await getApplicationDocumentsDirectory();
 
   String initialPath =
-      Platform.isAndroid ? directory.parent.path : directory.path;
+  Platform.isAndroid ? directory.parent.path : directory.path;
   var tempPath = join(initialPath, 'files', 'sounds');
   Directory dir = Directory(tempPath);
   String path = join(
@@ -498,7 +481,6 @@ Future<bool> checkIfMusicFileExists(filename) async {
 
   return doFileExists;
 }
-
 bool willTextOverFlow({
   @required String mytext,
   @required TextStyle style,
@@ -530,8 +512,8 @@ bool willTextOverFlow({
 
 navigateToMusicPlayer(BuildContext context, Track track,
     {String sourcePage,
-    bool fromPlayList = false,
-    bool isFromNotifications = false}) async {
+      bool fromPlayList = false,
+      bool isFromNotifications = false}) async {
   final musicService = locator<MusicService>();
   if (sourcePage != null) {
     recordNavigationAnalytics(
@@ -572,7 +554,6 @@ navigateToMusicPlayer(BuildContext context, Track track,
         context, fromPlayList, 'Single player page from $sourcePage');
   }
 }
-
 Future<bool> returnFalse() async {
   return false;
 }
@@ -585,7 +566,6 @@ preFetchHomePageItems(BuildContext context) async {
   BlocProvider.of<RitualsBloc>(context).add(FetchRitualsPlaylists());
   BlocProvider.of<SettingsBloc>(context).add(FetchSettings());
 }
-
 double getFontSize(BuildContext context, var size) {
   final fontSize = ResponsiveFlutter.of(context).fontSize(1);
   if (fontSize < 12) {
@@ -594,25 +574,21 @@ double getFontSize(BuildContext context, var size) {
     return ResponsiveFlutter.of(context).fontSize(size - 0.5);
   }
 }
-
 NativeAdmobOptions get getNativeAdmobOption => NativeAdmobOptions(
-      bodyTextStyle: NativeTextStyle(color: Colors.white),
-      adLabelTextStyle: NativeTextStyle(color: Colors.white),
-      advertiserTextStyle: NativeTextStyle(color: Colors.white),
-      headlineTextStyle: NativeTextStyle(color: Colors.white),
-      callToActionStyle: NativeTextStyle(color: Colors.white),
-      priceTextStyle: NativeTextStyle(color: Colors.white),
-      storeTextStyle: NativeTextStyle(color: Colors.white),
-    );
-
+  bodyTextStyle: NativeTextStyle(color: Colors.white),
+  adLabelTextStyle: NativeTextStyle(color: Colors.white),
+  advertiserTextStyle: NativeTextStyle(color: Colors.white),
+  headlineTextStyle: NativeTextStyle(color: Colors.white),
+  callToActionStyle: NativeTextStyle(color: Colors.white),
+  priceTextStyle: NativeTextStyle(color: Colors.white),
+  storeTextStyle: NativeTextStyle(color: Colors.white),
+);
 bool getBoolFromInt(int numb) {
   return numb == 1;
 }
-
 Duration getDurationFromDouble(double duration) {
   return Duration(milliseconds: duration.floor() * 1000);
 }
-
 trimDownloadFilename(String filename) {
   if (filename.length > 50) {
     /// i,.e get file extension from full filename and  append file extension .mp3, .ogg afterwards
@@ -623,13 +599,11 @@ trimDownloadFilename(String filename) {
     return filename;
   }
 }
-
 String removeAllHtmlTags(String htmlText) {
   RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
 
   return htmlText.replaceAll(exp, '');
 }
-
 Future<Duration> getLastPlayedDurationOfTrack(Track item) async {
   Database db = await DatabaseService().db;
   var dbRes = await db.rawQuery(
@@ -651,7 +625,6 @@ Future<Duration> getLastPlayedDurationOfTrack(Track item) async {
     return Duration.zero;
   }
 }
-
 bool isTrackLockedForDay(int index, PlayList playlist, Track track) {
   var _unlockDate = track.unlockDate;
   var _current = DateTime.now();
@@ -671,7 +644,6 @@ bool isTrackLockedForDay(int index, PlayList playlist, Track track) {
     }
   }
 }
-
 getReadableHourMinute(String duration) {
   var _list = duration.split(':');
 
@@ -688,7 +660,6 @@ getReadableHourMinute(String duration) {
     return '';
   }
 }
-
 navigateToSubsPage(String sourcePage) {
   recordAnalyticsToSubscriptionPage(source: sourcePage);
 
@@ -697,7 +668,6 @@ navigateToSubsPage(String sourcePage) {
       .currentState
       .push(CupertinoPageRoute(builder: (_) => GetPremium()));
 }
-
 datediff(Track track) {
   var _unlockDate = track.unlockDate;
   var _current = DateTime.now();
@@ -713,7 +683,6 @@ datediff(Track track) {
     }
   }
 }
-
 bool checkIfRitualTrackIsCurrentDay(PlayList playlist, int index) {
   var stat = playlist.playableStat;
 
