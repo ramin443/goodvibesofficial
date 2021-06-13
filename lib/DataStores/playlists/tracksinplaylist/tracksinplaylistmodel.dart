@@ -76,8 +76,9 @@ class TracksinPlaylistModel {
 
   // Extract a Note object from a Map object
   TracksinPlaylistModel.fromMapObject(Map<String, dynamic> map) {
-    this._id = map['trackid'];
+    this._id = map['id'];
     this._playlistid = map['playlistid'];
+    this._trackid = map['trackid'];
     this._trackname = map['trackname'];
     this._trackdescription = map['trackdescription'];
     this._trackduration = map['trackduration'];
@@ -87,5 +88,6 @@ class TracksinPlaylistModel {
 
   }
 }
+
 
 

@@ -1,20 +1,23 @@
 import 'dart:io';
+
 import 'package:dio/dio.dart';
+import "package:dio_firebase_performance/dio_firebase_performance.dart";
 import 'package:dio_http_cache/dio_http_cache.dart';
+
 //import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
+
 //import 'package:flutter_inapp_purchase/modules.dart';
 //import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:goodvibesoffl/config.dart';
 import 'package:goodvibesoffl/models/composer_audio_model.dart';
 import 'package:goodvibesoffl/services/session_service.dart';
-import 'package:goodvibesoffl/services/user_service.dart';
+import 'package:goodvibesoffl/services/shared_pref_service.dart';
 import 'package:goodvibesoffl/utils/common_functiona.dart';
 import 'package:goodvibesoffl/utils/strings/string_constants.dart';
-import 'package:goodvibesoffl/services/shared_pref_service.dart';
+
 //import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import '../locator.dart';
-import "package:dio_firebase_performance/dio_firebase_performance.dart";
 
 class ApiService {
   Dio _dio = Dio();
@@ -28,20 +31,25 @@ class ApiService {
 
   /// funnction which returns map for authorization header
   getAuthorization() {
-  //  var tokenFromLocator = locator<UserService>().user.value.authToken;
+    //  var tokenFromLocator = locator<UserService>().user.value.authToken;
 
     ////// //print('token from locator: $tokenFromLocator');
-    return {"Authorization": 'eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjozNzQ2N30.mMqJz0UBU6RnV6MtsvpEb0elFan3-iuK6awoFt5zN5I'};
+    return {
+      "Authorization":
+          'eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjozNzQ2N30.mMqJz0UBU6RnV6MtsvpEb0elFan3-iuK6awoFt5zN5I'
+    };
   }
 
   getAuthorizationWithSessionId() {
-  //  var token = locator<UserService>().user.value.authToken;
+    //  var token = locator<UserService>().user.value.authToken;
     var sessionId = sessionService.sessionId;
     print("session id is: $sessionId");
 
     // //print(token);
-    return
-         {authorization_key: 'eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo3MTI2Mn0.D8kypb9nfxIK8FAYjkuJWhbDv4ziPpWe7Z9NPSeeO_c'};
+    return {
+      authorization_key:
+          'eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo3MTI2Mn0.D8kypb9nfxIK8FAYjkuJWhbDv4ziPpWe7Z9NPSeeO_c'
+    };
   }
 
 //// map of cancel tokens for canceling http requests
@@ -256,9 +264,9 @@ class ApiService {
 
   Future getSearchDetails(
       {String text,
-        int page,
-        int perPage,
-        bool isRefreshRequest = false}) async {
+      int page,
+      int perPage,
+      bool isRefreshRequest = false}) async {
     //final url = '$baseUrl/tracks/search';
     final url = "$baseUrl/tracks";
     //// //print(url);
@@ -360,11 +368,11 @@ class ApiService {
         "title": title,
         "composition_tracks_attributes": List.generate(
             audios.length,
-                (index) => {
-              "track_id": audios[index].id,
-              "audio_level": audios[index].defaultVolume,
-              "position": index
-            })
+            (index) => {
+                  "track_id": audios[index].id,
+                  "audio_level": audios[index].defaultVolume,
+                  "position": index
+                })
       }
     };
 
@@ -384,7 +392,7 @@ class ApiService {
     //print("|update play count called : $url");
     try {
       final response =
-      await Dio(BaseOptions(receiveDataWhenStatusError: true)).put(
+          await Dio(BaseOptions(receiveDataWhenStatusError: true)).put(
         url,
         options: Options(
           headers: getAuthorizationWithSessionId(),
@@ -406,7 +414,7 @@ class ApiService {
     try {
       final response = await Dio(BaseOptions(receiveDataWhenStatusError: true))
           .delete(url,
-          options: Options(headers: getAuthorizationWithSessionId()));
+              options: Options(headers: getAuthorizationWithSessionId()));
 
       if (response.statusCode == 200) {
         return {"data": response.data};
@@ -425,11 +433,11 @@ class ApiService {
         "title": title,
         "composition_tracks_attributes": List.generate(
             audios.length,
-                (index) => {
-              "track_id": audios[index].id,
-              "audio_level": audios[index].defaultVolume,
-              "position": index
-            })
+            (index) => {
+                  "track_id": audios[index].id,
+                  "audio_level": audios[index].defaultVolume,
+                  "position": index
+                })
       }
     };
 
@@ -798,9 +806,9 @@ class ApiService {
 
   getPlaylist(
       {String slug,
-        int page,
-        int perpage,
-        bool isRefreshRequest = false}) async {
+      int page,
+      int perpage,
+      bool isRefreshRequest = false}) async {
     final url = '$baseUrl/playables/$slug';
     // final url = '$baseUrl/tracks';
     // //print(url);
@@ -852,9 +860,9 @@ class ApiService {
 
   getViewAllOfSpecificItem(
       {String slug,
-        int page,
-        int perpage,
-        bool isRefreshRequest = false}) async {
+      int page,
+      int perpage,
+      bool isRefreshRequest = false}) async {
     final url = "$baseUrl/playables/$slug";
     final response = await getRequest(
       nonCachableList: _nonCachhableEndpoints,
@@ -944,14 +952,14 @@ class ApiService {
     return response;
   }
 
- // signInWithApple(String authorizattionCode,
+  // signInWithApple(String authorizattionCode,
   //    AuthorizationCredentialAppleID credential) async {
-   // final url = "$baseUrl/login";
+  // final url = "$baseUrl/login";
 
- //   final response = await postRequest(url: url, data: {
-   //   "authorization_code": credential.authorizationCode,
- //     "provider": "apple",
-    //  "identity_token": credential.identityToken,
+  //   final response = await postRequest(url: url, data: {
+  //   "authorization_code": credential.authorizationCode,
+  //     "provider": "apple",
+  //  "identity_token": credential.identityToken,
   //    "user_identity": credential.userIdentifier
 //    });
 
@@ -1086,7 +1094,6 @@ class ApiService {
       "email": email,
       "uuid": uuid,
     });
-
 
     final response = await postRequest(
       url: url,
@@ -1256,7 +1263,7 @@ class ApiService {
     final updateUrl = '$baseUrl/users/update_current_user';
 
     final _formData =
-    FormData.fromMap({'image': await MultipartFile.fromFile(imagePath)});
+        FormData.fromMap({'image': await MultipartFile.fromFile(imagePath)});
 
     await _dio.put(
       updateUrl,
@@ -1299,31 +1306,31 @@ class ApiService {
 
   /// method to send subscription info to server
   /// after purchase is complete
- // subscribeUser(
+  // subscribeUser(
 //      {PurchasedItem purchase,
   //      String subscriptionType,
-       // String uid,
-     //   Map<String, dynamic> bodyData}) async {
-   // final url = '$baseUrl/subscriptions';
+  // String uid,
+  //   Map<String, dynamic> bodyData}) async {
+  // final url = '$baseUrl/subscriptions';
 
-    //print(url);
+  //print(url);
 
-   // FormData formData = new FormData.fromMap(
-     // {
-     //   "purchase_token": purchase.purchaseToken,
-   //     "product_id": purchase.productId,
-     //   "order_id": purchase.orderId,
-        //   "package_name": purchase.skPaymentTransaction.payment.productIdentifier,
-   //     "purchase_time": purchase.transactionDate.toString(),
-       // "transaction_date": purchase.transactionDate.toString(),
-     //   "subs": subscriptionType
-   //   },
- //   );
+  // FormData formData = new FormData.fromMap(
+  // {
+  //   "purchase_token": purchase.purchaseToken,
+  //     "product_id": purchase.productId,
+  //   "order_id": purchase.orderId,
+  //   "package_name": purchase.skPaymentTransaction.payment.productIdentifier,
+  //     "purchase_time": purchase.transactionDate.toString(),
+  // "transaction_date": purchase.transactionDate.toString(),
+  //   "subs": subscriptionType
+  //   },
+  //   );
 
-   // var rsp = await postRequest(
- //     url: url,
-      //data: bodyData,
-    //  options: Options(headers: getAuthorizationWithSessionId()),
+  // var rsp = await postRequest(
+  //     url: url,
+  //data: bodyData,
+  //  options: Options(headers: getAuthorizationWithSessionId()),
   //  );
 //
   //  return rsp;
@@ -1346,7 +1353,9 @@ class ApiService {
   /// sessions
 
   getASession() async {}
+
   getAllSessions() async {}
+
   getCurrentSession() async {}
 
   getConfig() async {
@@ -1468,11 +1477,11 @@ class ApiService {
 
     try {
       final response =
-      await Dio(BaseOptions(receiveDataWhenStatusError: true)).delete(_url,
-          data: {'playlist_id': playlistId},
-          options: Options(
-            headers: getAuthorizationWithSessionId(),
-          ));
+          await Dio(BaseOptions(receiveDataWhenStatusError: true)).delete(_url,
+              data: {'playlist_id': playlistId},
+              options: Options(
+                headers: getAuthorizationWithSessionId(),
+              ));
 
       return response;
     } on DioError catch (e) {
@@ -1507,10 +1516,10 @@ Map<String, String> convertMapDynamicToString(Map<String, dynamic> json) {
 
 Future<Map<String, dynamic>> getRequest(
     {var queryParameters,
-      @required var url,
-      Options options,
-      bool isRefreshRequest = false,
-      List<String> nonCachableList}) async {
+    @required var url,
+    Options options,
+    bool isRefreshRequest = false,
+    List<String> nonCachableList}) async {
   Map<String, dynamic> httpResponse = {};
   Dio _dio = Dio();
   // print(url);
@@ -1534,7 +1543,7 @@ Future<Map<String, dynamic>> getRequest(
 
     var some = tempUri.toString();
     var urlAddress =
-    Uri.parse("https://" + tempUri.toString().split("https://").last);
+        Uri.parse("https://" + tempUri.toString().split("https://").last);
 
     final _config = CacheConfig(
       baseUrl: url,
@@ -1562,10 +1571,10 @@ Future<Map<String, dynamic>> getRequest(
       options: _isUrlNonCachable
           ? options
           : buildCacheOptions(
-        Duration(hours: 6),
-        options: options,
-        maxStale: Duration(days: 1),
-      ),
+              Duration(hours: 6),
+              options: options,
+              maxStale: Duration(days: 1),
+            ),
       queryParameters: queryParameters,
     );
 
@@ -1594,9 +1603,9 @@ Future<Map<String, dynamic>> getRequest(
     }
   } on DioError catch (e, stackTrace) {
     //print("error:$e   at url : $url");
- //   Crashlytics.instance.recordError(
-   //     'Api get request error at $url \n with message ${e.toString()} ',
-     //   stackTrace);
+    //   Crashlytics.instance.recordError(
+    //     'Api get request error at $url \n with message ${e.toString()} ',
+    //   stackTrace);
 
     handleError(e: e.toString(), httpResponse: httpResponse, stack: stackTrace);
     if (e.toString().toLowerCase().contains("socketexception")) {
@@ -1631,12 +1640,10 @@ Future<Map<String, dynamic>> postRequest(
       handleSession(response, _sessionService);
 
       if (response != null) {
-
         if (response.data["success"] == true) {
           httpResponse['data'] = response.data['data'];
           if (response.data.containsKey("message"))
             httpResponse["message"] = response.data["message"];
-
         } else {
           //// //print(response.data["error"]);
           httpResponse["error"] = response.data["error"];
@@ -1684,11 +1691,28 @@ handleError({String e, Map httpResponse, StackTrace stack}) {
     } else if (error.contains('422')) {
       httpResponse['error'] = error_mdg_422;
     } else {
- //     FirebaseCrashlytics.instance.recordError(e, stack);
+      //     FirebaseCrashlytics.instance.recordError(e, stack);
 
       httpResponse['error'] = error_error;
     }
   }
+}
+
+Dio getApiClient() {
+  Dio _dio = new Dio();
+  _dio.options = BaseOptions(connectTimeout: 5000, receiveTimeout: 5000);
+  _dio.interceptors.clear();
+  final performanceInterceptor = DioFirebasePerformanceInterceptor();
+  _dio.interceptors.add(performanceInterceptor);
+  _dio.interceptors.add(InterceptorsWrapper(
+      onRequest: (RequestOptions options) async {
+        return options;
+      },
+      onResponse: (Response response) {
+        return response; // continue
+      },
+      onError: (DioError error) async {}));
+  return _dio;
 }
 
 handleSession(Response response, SessionService service) {
