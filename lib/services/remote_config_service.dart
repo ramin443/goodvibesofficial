@@ -1,18 +1,16 @@
 import 'dart:collection';
 import 'dart:convert';
-
 import 'package:firebase_remote_config/firebase_remote_config.dart';
-import 'package:flutter/foundation.dart' as Foundation;
 import 'package:goodvibesoffl/locator.dart';
 import 'package:goodvibesoffl/models/adsModel.dart';
 import 'package:goodvibesoffl/models/app_update_model.dart';
 import 'package:goodvibesoffl/models/introConfig.dart';
 import 'package:goodvibesoffl/models/login_text_model.dart';
+import 'package:goodvibesoffl/models/models.dart';
 import 'package:goodvibesoffl/models/uiConfig.dart';
 import 'package:goodvibesoffl/services/adsModelService.dart';
 import 'package:goodvibesoffl/services/services.dart';
 import 'package:goodvibesoffl/services/shared_pref_service.dart';
-import 'package:goodvibesoffl/utils/remote_config_constants.dart';
 import 'package:goodvibesoffl/utils/utils.dart';
 
 const String _LoginText = "login_text";
@@ -41,16 +39,13 @@ class RemoteConfigService {
 
   List<LoginTextModel> _loginTextModel = [];
   AppUpdateModel _appUpdateModel;
-
   AppUpdateModel get appUpdateModel => _appUpdateModel;
   bool _isLoaded = false;
 
   UIConfig _uIConfig;
-
   UIConfig get uIConfig => _uIConfig;
 
   IntroOfferConfig _introOfferConfig;
-
   IntroOfferConfig get introOfferConfig => _introOfferConfig;
 
   static final Map<String, dynamic> _appUdateDefaultConfig = {
@@ -72,9 +67,6 @@ class RemoteConfigService {
 
   static final Map<String, dynamic> _uiRemoteconfigDefaultData = {
     'promos': {'android': false, 'ios': false}
-  };
-  static final Map<String, dynamic> intro_offer_ui_config = {
-    "intro_offer_ui_config": {"ios": false, "android": false}
   };
   static final _introPriceConfig = {'ios': false, 'android': false};
 
@@ -102,8 +94,7 @@ class RemoteConfigService {
     }),
     _AppUpdateConfig: json.encode(_appUdateDefaultConfig),
     _UiConfig: json.encode(_uiRemoteconfigDefaultData),
-    _IntroConfig: json.encode(_introPriceConfig),
-    INTRO_UI_CONFIG: INTRO_UI_CONFIG_DEFAULT_VALUE
+    _IntroConfig: json.encode(_introPriceConfig)
   };
   final List<LoginTextModel> defaultTextModel = [
     LoginTextModel(
@@ -125,8 +116,6 @@ class RemoteConfigService {
     try {
       await _remoteConfig.setDefaults(defaults);
       await _fetchAndActivate();
-
-      fetchRemoteConfig();
 
       /// getting login screen data
       List<dynamic> data = json.decode(_remoteConfig.getString(_LoginText));
@@ -190,33 +179,9 @@ class RemoteConfigService {
     }
   }
 
-  fetchRemoteConfig() {
-    var introUiConfig = _remoteConfig.getString(INTRO_UI_CONFIG);
-    print(introUiConfig);
-
-    //todo add to state management model
-  }
-
-  _fetchAndActivate() async {
-    try {
-      if (Foundation.kReleaseMode) {
-        try {
-          await _remoteConfig.fetch(expiration: const Duration(hours: 8));
-          await _remoteConfig.activateFetched();
-        } catch (e) {
-          dPrint(e.toString());
-        }
-      } else {
-        try {
-          await _remoteConfig.fetch(expiration: const Duration(hours: 8));
-          await _remoteConfig.activateFetched();
-        } catch (e) {
-          dPrint(e.toString());
-        }
-      }
-    } catch (e) {
-      dPrint(e.toString());
-    }
+  Future _fetchAndActivate() async {
+    await _remoteConfig.fetch(expiration: Duration(hours: 8));
+    await _remoteConfig.activateFetched().whenComplete(() => _isLoaded = true);
   }
 
   bool get isLoaded => _isLoaded;

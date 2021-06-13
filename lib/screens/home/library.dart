@@ -1,5 +1,4 @@
 
-import 'dart:math';
 import 'dart:ui';
 
 import 'package:assets_audio_player/assets_audio_player.dart';
@@ -10,25 +9,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:goodvibesoffl/DataStores/playlists/PlaylistModel.dart';
-import 'package:goodvibesoffl/DataStores/playlists/playlistdbhelper.dart';
-import 'package:goodvibesoffl/DataStores/playlists/tracksinplaylist/tracksinplaylistmodel.dart';
 import 'package:goodvibesoffl/constants/fontconstants.dart';
 import 'package:goodvibesoffl/favorites/favoritesdbhelper.dart';
 import 'package:goodvibesoffl/favorites/favoritetrackmodel.dart';
 import 'package:goodvibesoffl/screens/premium/getpremium.dart';
 import 'package:goodvibesoffl/screens/sharables/MusicPlayer.dart';
-import 'package:goodvibesoffl/screens/sharables/PlaylistDetail.dart';
-import 'package:goodvibesoffl/screens/sharables/playlist_provider.dart';
 import 'package:goodvibesoffl/screens/sharables/music_player.dart';
-import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:goodvibesoffl/constants/styleconstants.dart'as Styleconst;
 import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
 
 class Library extends StatefulWidget {
-
   @override
   _LibraryState createState() => _LibraryState();
 }
@@ -37,30 +29,26 @@ class _LibraryState extends State<Library>with TickerProviderStateMixin {
   FavoritesDatabaseHelper favoritesDatabaseHelper = FavoritesDatabaseHelper();
   List<FavoriteTrackModel> favoritesList;
   int count = 0;
-  PlaylistDatabaseHelper playlistDatabaseHelper = PlaylistDatabaseHelper();
-  List<PlaylistModel> playlists;
-  int playlistcount = 0;
   TabController tabController;
   bool favorites=true;
   bool downloadedtracks=true;
-  bool tracks=true;
-  bool first=false;
-  bool second=false;
-  bool third=false;
+bool tracks=true;
+bool first=false;
+bool second=false;
+bool third=false;
   int totalduration=0;
   PlayerState _playerState;
   int currentprogress=0;
   bool loop=false;
   bool playing=false;
   bool playmorethanonce=false;
-  TextEditingController playlistcontroller=TextEditingController();
+
   @override
   void initState() {
     super.initState();
     tabController=TabController(length: 2, vsync: this);
     addcurrentaudiolistener();
-    updateplaylistview();
-    updateListView();
+updateListView();
   }
 
   addcurrentaudiolistener()async{
@@ -110,7 +98,6 @@ class _LibraryState extends State<Library>with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final musicplays=Provider.of<MusicPlays>(context);
-    final playlistfunctions=Provider.of<PlayListFunctions>(context);
 
     if (favoritesList == null) {
       favoritesList = List<FavoriteTrackModel>();
@@ -128,16 +115,16 @@ class _LibraryState extends State<Library>with TickerProviderStateMixin {
       Scaffold(
           floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
           floatingActionButton:   musicplays.getminiplayer(context),
-          backgroundColor: Colors.transparent,
-          appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
             automaticallyImplyLeading: false,
             elevation: 0,
             backgroundColor: Color(0xfff5f5f5),
             centerTitle: false,
             title: Container(
               margin: EdgeInsets.only(
-                //             left: 14
-                  left: screenarea*0.0000559
+     //             left: 14
+       left: screenarea*0.0000559
               ),
               //        padding: EdgeInsets.all(8),
               child: SvgPicture.asset('assets/images/logo 2.svg',
@@ -146,72 +133,72 @@ class _LibraryState extends State<Library>with TickerProviderStateMixin {
                 //          width: 35,
               ),
             ),
+        ),
+        body: SingleChildScrollView(child:
+        Container(
+          width: screenwidth,
+
+          margin: EdgeInsets.only(
+        //      left: 22,right: 22
+left: screenwidth*0.0586,right:screenwidth*0.0586
           ),
-          body: SingleChildScrollView(child:
+          child: Column(mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Container(
+                child:
+          Row(mainAxisAlignment:MainAxisAlignment.start,children: [
+            GestureDetector(
+                onTap: (){
+setState(() {
+  favorites==false?favorites=true:emptycode();
+});
+                },
+                child:
+            Container(child: Text("Favorites",style: TextStyle(
+              fontFamily: helveticaneuemedium,color:favorites?Colors.black87:Colors.black38,
+        //        fontSize: 22
+          fontSize: screenwidth*0.0586
+            ),),)),
+            GestureDetector(
+                onTap: (){
+                  setState(() {
+                    favorites==true?favorites=false:emptycode();
+                  });
+                },
+                child:
+                    favorites?
+                Container(margin:EdgeInsets.only(
+           //         left: 21
+left: screenarea*0.0000839
+                ),child: Text("Downloads",style: TextStyle(
+                    fontFamily: helveticaneuemedium,color:Colors.black38,
+             //       fontSize: 22
+                    fontSize: screenwidth*0.0586
+                ),),):  Container(margin:EdgeInsets.only(
+                    //    left: 21
+                        left: screenarea*0.0000839
+                    ),child: Text("Downloads",style: TextStyle(
+                        fontFamily: helveticaneuemedium,color: Colors.black87,
+               //         fontSize: 22
+                        fontSize: screenwidth*0.0586
+                    ),),)),
+
+          ],)),
           Container(
-            width: screenwidth,
+child:
+Row(mainAxisAlignment: MainAxisAlignment.start,
+    children:[
+      Container(child: AnimatedSwitcher(
+        duration: Duration(milliseconds: 1000,
+        ),
+        child: favorites?
+        favoritestab():downloadstab(),
+      ),),
 
-            margin: EdgeInsets.only(
-              //      left: 22,right: 22
-                left: screenwidth*0.0586,right:screenwidth*0.0586
-            ),
-            child: Column(mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Container(
-                    child:
-                    Row(mainAxisAlignment:MainAxisAlignment.start,children: [
-                      GestureDetector(
-                          onTap: (){
-                            setState(() {
-                              favorites==false?favorites=true:emptycode();
-                            });
-                          },
-                          child:
-                          Container(child: Text("Favorites",style: TextStyle(
-                              fontFamily: helveticaneuemedium,color:favorites?Colors.black87:Colors.black38,
-                              //        fontSize: 22
-                              fontSize: screenwidth*0.0586
-                          ),),)),
-                      GestureDetector(
-                          onTap: (){
-                            setState(() {
-                              favorites==true?favorites=false:emptycode();
-                            });
-                          },
-                          child:
-                          favorites?
-                          Container(margin:EdgeInsets.only(
-                            //         left: 21
-                              left: screenarea*0.0000839
-                          ),child: Text("Downloads",style: TextStyle(
-                              fontFamily: helveticaneuemedium,color:Colors.black38,
-                              //       fontSize: 22
-                              fontSize: screenwidth*0.0586
-                          ),),):  Container(margin:EdgeInsets.only(
-                            //    left: 21
-                              left: screenarea*0.0000839
-                          ),child: Text("Downloads",style: TextStyle(
-                              fontFamily: helveticaneuemedium,color: Colors.black87,
-                              //         fontSize: 22
-                              fontSize: screenwidth*0.0586
-                          ),),)),
+            ])),
 
-                    ],)),
-                Container(
-                    child:
-                    Row(mainAxisAlignment: MainAxisAlignment.start,
-                        children:[
-                          Container(child: AnimatedSwitcher(
-                            duration: Duration(milliseconds: 1000,
-                            ),
-                            child: favorites?
-                            favoritestab():downloadstab(),
-                          ),),
-
-                        ])),
-
-              ],),
-          ))
+        ],),
+        ))
       );
   }
   Widget favoritestab(){
@@ -219,472 +206,363 @@ class _LibraryState extends State<Library>with TickerProviderStateMixin {
     double screenwidth=MediaQuery.of(context).size.width;
     double screenarea=screenheight*screenwidth;
     return Container(
-        key: Key("swit"),
-        margin: EdgeInsets.only(
-          //      top: 12
-            top: screenarea*0.0000479
-        ),
-        child: Column(mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: screenwidth*0.42,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+      key: Key("swit"),
+      margin: EdgeInsets.only(
+    //      top: 12
+      top: screenarea*0.0000479
+      ),
+      child: Column(mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: screenwidth*0.42,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment:MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      mainAxisAlignment:MainAxisAlignment.spaceBetween,
-                      children: [
-                        GestureDetector(
-                            onTap: (){
-                              setState(() {
-                                tracks?emptycode():tracks=true;
-                                //      trackslist()=favplaylist();
-                              });
-                            },
-                            child:
-                            Container(child: Text("Tracks",style: TextStyle(
-                                fontFamily: helveticaneuemedium,color:tracks? Colors.black87:Colors.black38,
-                                //fontSize: 13
-                                fontSize: screenwidth*0.0346
-                            ),),)),
-                        GestureDetector(
-                            onTap: (){
-                              setState(() {
-                                tracks?tracks=false:emptycode();
-                              });
-                            },
-                            child:
-                            Container(
-                              child: Text("Favorite Playlist",style: TextStyle(
-                                  fontFamily: helveticaneuemedium,color:tracks?Colors.black38: Colors.black87,
-                                  //                  fontSize: 13
-                                  fontSize: screenwidth*0.0346
-                              ),),)),
-                      ],)
-                  ],),),
-              AnimatedContainer(
-                //     height: 3,
-                height: screenheight*0.00449,
-                margin: EdgeInsets.only(
-                  //            top: 4.5
-                    top: screenarea*0.0000179
-                ),
-                duration: Duration(milliseconds: 250),
-                width: screenwidth*0.42,
-                alignment: tracks?Alignment.centerLeft:Alignment.centerRight,
-                child:
+                    GestureDetector(
+                        onTap: (){
+                          setState(() {
+                            tracks?emptycode():tracks=true;
+                      //      trackslist()=favplaylist();
+                          });
+                        },
+                        child:
+                    Container(child: Text("Tracks",style: TextStyle(
+                        fontFamily: helveticaneuemedium,color:tracks? Colors.black87:Colors.black38,
+                        //fontSize: 13
+                        fontSize: screenwidth*0.0346
+                    ),),)),
+                    GestureDetector(
+                      onTap: (){
+                        setState(() {
+                          tracks?tracks=false:emptycode();
+                        });
+                      },
+                      child:
+                    Container(
+                      child: Text("Favorite Playlist",style: TextStyle(
+                          fontFamily: helveticaneuemedium,color:tracks?Colors.black38: Colors.black87,
+        //                  fontSize: 13
+          fontSize: screenwidth*0.0346
+                      ),),)),
+                  ],)
+              ],),),
+          AnimatedContainer(
+       //     height: 3,
+         height: screenheight*0.00449,
+            margin: EdgeInsets.only(
+    //            top: 4.5
+                top: screenarea*0.0000179
+            ),
+            duration: Duration(milliseconds: 250),
+width: screenwidth*0.42,
+alignment: tracks?Alignment.centerLeft:Alignment.centerRight,
+            child:
 
-                AnimatedContainer(
-                  duration: Duration(milliseconds: 250),
-//             height: 3,
-                  height: screenheight*0.00449,
+            AnimatedContainer(
+              duration: Duration(milliseconds: 250),
+ //             height: 3,
+              height: screenheight*0.00449,
 
-                  width: tracks?
-                  // 45:96
-                  screenwidth*0.12:screenwidth*0.256
-                  ,
-                  decoration: BoxDecoration(color: Color(0xff9797de)),
-                ),
-              ),
-              Container(child: AnimatedSwitcher(
-                //  key: UniqueKey(),
-                duration: Duration(milliseconds: 350),
-                child: tracks?trackslist():favplaylist(context),
-              ),),
+              width: tracks?
+             // 45:96
+screenwidth*0.12:screenwidth*0.256
+              ,
+              decoration: BoxDecoration(color: Color(0xff9797de)),
+            ),
+          ),
+      Container(child: AnimatedSwitcher(
+      //  key: UniqueKey(),
+        duration: Duration(milliseconds: 350),
+        child: tracks?trackslist():favplaylist(),
+      ),),
 
-            ])
+              ])
 
 
-    );
+        );
   }
-  Widget favplaylist(BuildContext context){
-    final playlistfunctions=Provider.of<PlayListFunctions>(context);
-
+  Widget favplaylist(){
     double screenheight=MediaQuery.of(context).size.height;
     double screenwidth=MediaQuery.of(context).size.width;
     double screenarea=screenheight*screenwidth;
     return Column(
-        key: UniqueKey(),
+      key: UniqueKey(),
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           GestureDetector(
               onTap: (){
                 showDialog(context: context, builder: (context)=>
-                new CupertinoAlertDialog(
-                  title: new Text("Create Playlist", style: TextStyle(
-                      color: Colors.black87,
-                      fontFamily: helveticaneueregular,
+                  new CupertinoAlertDialog(
+                title: new Text("Create Playlist", style: TextStyle(
+color: Colors.black87,
+fontFamily: helveticaneueregular,
                       letterSpacing: 0.2,
                       fontSize: screenwidth*0.0453
                   ),),
-                  content: new Material(
-                      color: Colors.transparent,
-                      child:Column(children:[
-                        Container(
-                            margin:EdgeInsets.only(top: 2),
-                            child:   Text("Now You Can Add Your Tracks\nTo Your Own Custom Playlist",
-                              textAlign:TextAlign.center,style: TextStyle(
-                                  letterSpacing: -0.2,
-                                  color: Colors.black87,
-                                  fontFamily: helveticaneueregular,
-                                  fontSize: screenwidth*0.0346
-                              ),)),
-                        Container(
-                            margin: EdgeInsets.only(top: 16,
-                                bottom: 0),
-                            //     height:35 ,
-                            //     height: screeheight*0.05247,
-                            height: screenwidth*0.086,
-                            //    width: 244,
-                            width: screenwidth*0.65,
-                            padding: EdgeInsets.only(
-                              //    left: 10,
-                              top: 4,
-                              left: screenarea*0.00003998,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.all(Radius.circular(6)),
-                            ),child:Center(
-                          child: TextField(
-                            controller: playlistcontroller,
-                            style: TextStyle(
-                                fontFamily: helveticaneueregular,
-                                color: Colors.grey[800],
-                                //  fontSize: 14
-                                fontSize: screenwidth*0.0373
-                            ),
-                            decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintStyle: TextStyle(
-                                    fontFamily: helveticaneueregular,
-                                    color: Colors.grey[300],
-                                    //        fontSize: 14
-                                    fontSize: screenwidth*0.0373
-                                ),
-                                hintText: 'My Playlist #2'
-                            ),
-                          ),)
-                        ),
-                      ])),
-                  actions: <Widget>[
-                    FlatButton(
-                      child: Text('Cancel',
-                        style: TextStyle(
-                            color: Color(0xff007aff),
-                            fontFamily: helveticaneueregular,
-                            fontSize: screenwidth*0.0453
-                        ),),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
+                content: new Material(
+                    color: Colors.transparent,
+                    child:Column(children:[
+               Container(
+                   margin:EdgeInsets.only(top: 2),
+                   child:   Text("Now You Can Add Your Tracks\nTo Your Own Custom Playlist",
+                    textAlign:TextAlign.center,style: TextStyle(
+                      letterSpacing: -0.2,
+                    color: Colors.black87,
+                    fontFamily: helveticaneueregular,
+                    fontSize: screenwidth*0.0346
+                ),)),
+                  Container(
+                    margin: EdgeInsets.only(top: 16,
+                    bottom: 0),
+                    //     height:35 ,
+                    //     height: screeheight*0.05247,
+                      height: screenwidth*0.086,
+                      //    width: 244,
+                      width: screenwidth*0.65,
+                      padding: EdgeInsets.only(
+                        //    left: 10,
+                        top: 4,
+                          left: screenarea*0.00003998,
+                         ),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(6)),
+                      ),child:Center(
+                    child: TextField(
+
+                    style: TextStyle(
+                        fontFamily: helveticaneueregular,
+                        color: Colors.grey[800],
+                        //  fontSize: 14
+                        fontSize: screenwidth*0.0373
                     ),
-                    FlatButton(
-                      child: Text('Create',
-                        style: TextStyle(
-                            color: Color(0xff007aff),
-                            fontFamily: helveticaneuemedium,
-                            fontSize: screenwidth*0.0453
-                        ),),
-                      onPressed: () async{
-                        playlistfunctions.savenewplaylist(PlaylistModel(Random().nextInt(10000), playlistcontroller.text,
-                            DateFormat.yMMMMd('en_US').format(DateTime.now())
-                                +" "+DateFormat.jm().format(DateTime.now())));
-                        updateplaylistview();
-                        Navigator.of(context).pop();
-                      },
-                    )
-                  ],
+                    decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintStyle: TextStyle(
+                            fontFamily: helveticaneueregular,
+                            color: Colors.grey[300],
+                            //        fontSize: 14
+                            fontSize: screenwidth*0.0373
+                        ),
+                        hintText: 'My Playlist #2'
+                    ),
+                  ),)
+                  ),
+                ])),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text('Cancel',
+                      style: TextStyle(
+                          color: Color(0xff007aff),
+                          fontFamily: helveticaneueregular,
+                          fontSize: screenwidth*0.0453
+                      ),),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  FlatButton(
+                    child: Text('Create',
+                    style: TextStyle(
+                      color: Color(0xff007aff),
+                      fontFamily: helveticaneuemedium,
+                      fontSize: screenwidth*0.0453
+                    ),),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  )
+                ],
                 )
                 );
               },
               child:
-              Container(
-                margin: EdgeInsets.only(
-//       top: 20
-                    top: screenarea*0.0000799
-                ),
-                child: Row(mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-//   height:30,width: 30,
-                        height: screenheight*0.0449,width: screenheight*0.0449,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border:Border.all(color: Colors.grey[600],width: 1)
-                        ),
-                        child: Center(child:
-                        Icon(CupertinoIcons.plus,
-                          //  size: 25,
-                          size: screenwidth*0.0666,
-                          color: Colors.black54.withOpacity(0.72),),)),
-                    Container(
-                      margin: EdgeInsets.only(
-                        //      left: 11
-                          left: screenarea*0.0000439
-                      ),
-                      child: Text("Create playlist",style: TextStyle(
-                        fontFamily: helveticaneuemedium,color: Colors.black87,
-                      ),),)
-                  ],),)),
-
-          LimitedBox(
-            maxWidth: MediaQuery.of(context).size.width*0.85,
-            maxHeight: screenheight*0.8,
-            child: ListView.builder(
-              physics: BouncingScrollPhysics(),
-              scrollDirection: Axis.vertical,
-              itemCount: playlists.length,
-              itemBuilder: (context,index){
-                return
-                  GestureDetector(
-                      onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context)
-                        =>
-                            PlayListDetail(
-                                playlistindex: index,
-                                playlisttitle: this.playlists[index].playlistname,
-                                playlistid: this.playlists[index].playlistid,
-                                playlistcreateddate: this.playlists[index].datecreated)
-                        ));
-                      },
-                      child:
-                      Container(
-                          width: screenwidth,
-                          margin: EdgeInsets.only(
+    Container(
+    margin: EdgeInsets.only(
+ //       top: 20
+   top: screenarea*0.0000799
+    ),
+    child: Row(mainAxisAlignment: MainAxisAlignment.start,
+    children: [
+    Container(
+ //   height:30,width: 30,
+   height: screenheight*0.0449,width: screenheight*0.0449,
+    alignment: Alignment.center,
+    decoration: BoxDecoration(
+    shape: BoxShape.circle,
+    border:Border.all(color: Colors.grey[600],width: 1)
+    ),
+    child: Center(child:
+    Icon(CupertinoIcons.plus,
+    //  size: 25,
+      size: screenwidth*0.0666,
+      color: Colors.black54.withOpacity(0.72),),)),
+    Container(
+    margin: EdgeInsets.only(
+  //      left: 11
+    left: screenarea*0.0000439
+    ),
+    child: Text("Create playlist",style: TextStyle(
+    fontFamily: helveticaneuemedium,color: Colors.black87,
+    ),),)
+    ],),)),
+    Container(
+    width: MediaQuery.of(context).size.width*0.85,
+    margin: EdgeInsets.only(
 //    top: 20,
-                              top: screenarea*0.0000799
-                            //  left: 26, right: 26
-                            //     right: screenarea*0.000103
-                          ),
-                          child:
-                          Column(children:[
-                            Container(
-                                margin:EdgeInsets.only(
-                                  //  bottom: 9
+        top: screenarea*0.0000799
+    //  left: 26, right: 26
+    //     right: screenarea*0.000103
+    ),
+    child:
+    Column(children:[
+    Container(
+    margin:EdgeInsets.only(
+    //  bottom: 9
 //    bottom: 8
-                                    bottom: screenarea*0.0000319
-                                ),
-                                child:
-                                Row(
+  bottom: screenarea*0.0000319
+    ),
+    child:
+    Row(
 
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    ClipOval(child: Container(
-                                      //           height: 35,width: 35,
-                                      height: screenwidth*0.093,width: screenwidth*0.093,
-                                      decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          border:Border.all(color: Color(0xff12c2e9),width: 1,style: BorderStyle.solid)
-                                        //  color: Color(0xff12c2e9),
-                                      ),
-                                      child: Center(child: Icon(Icons.play_arrow,
-                                        color: Color(0xff12c2e9),
-                                        //     size: 26.5,
-                                        size: screenwidth*0.0706,
-                                      ),),
-                                    ),),
-                                    Container(margin: EdgeInsets.only(
-                                      //   left: 11
-                                        left: screenarea*0.0000439
-                                    ),
-                                      child: Column(crossAxisAlignment: CrossAxisAlignment.start,mainAxisAlignment:
-                                      MainAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            margin:EdgeInsets.only(
-                                              //   bottom: 4
-                                                bottom: screenarea*0.0000159
-                                            ),
-                                            child: Text(this.playlists[index].playlistname,style: TextStyle(
-                                                fontFamily: helveticaneuemedium,color: Color(0xff12c2e9),
-                                                //fontSize: 12.5
-                                                fontSize: screenwidth*0.0333
-                                            ),),),
-                                          Container(child: Text("By Sebastian",style: TextStyle(
-                                              fontFamily: helveticaneueregular,color: Color(0xff12c2e9).withOpacity(0.5),
-                                              //fontSize: 10.5
-                                              fontSize: screenwidth*0.028
-                                          ),),),
-                                        ],),),
-                                    Expanded(child:
-                                    Row(
-                                        mainAxisAlignment: MainAxisAlignment.end,
-                                        children:[
-                                          Text(
-                                            this.playlists[index].datecreated,
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+    ClipOval(child: Container(
+    //           height: 35,width: 35,
+    height: screenwidth*0.093,width: screenwidth*0.093,
+    decoration: BoxDecoration(
+    shape: BoxShape.circle,
+    border:Border.all(color: Color(0xff12c2e9),width: 1,style: BorderStyle.solid)
+    //  color: Color(0xff12c2e9),
+    ),
+    child: Center(child: Icon(Icons.play_arrow,
+    color: Color(0xff12c2e9),
+    //     size: 26.5,
+    size: screenwidth*0.0706,
+    ),),
+    ),),
+    Container(margin: EdgeInsets.only(
+    //   left: 11
+    left: screenarea*0.0000439
+    ),
+    child: Column(crossAxisAlignment: CrossAxisAlignment.start,mainAxisAlignment:
+    MainAxisAlignment.start,
+    children: [
+    Container(
+    margin:EdgeInsets.only(
+    //   bottom: 4
+    bottom: screenarea*0.0000159
+    ),
+    child: Text("My Playlist #1",style: TextStyle(
+    fontFamily: helveticaneuemedium,color: Color(0xff12c2e9),
+    //fontSize: 12.5
+    fontSize: screenwidth*0.0333
+    ),),),
+    Container(child: Text("By Sebastian",style: TextStyle(
+    fontFamily: helveticaneueregular,color: Color(0xff12c2e9).withOpacity(0.5),
+    //fontSize: 10.5
+    fontSize: screenwidth*0.028
+    ),),),
+    ],),),
+    Expanded(child:
+    Row(
+    mainAxisAlignment: MainAxisAlignment.end,
+    children:[
+    Text(
+    "17:24",
+    textAlign:TextAlign.end,style: TextStyle(
+    fontFamily: helveticaneuemedium,color: Color(0xff12c2e9),
+    // fontSize: 12.5
+    fontSize: screenwidth*0.0333
+    ),
+    ),]))
+    ],
+    )),
+    Divider(thickness: 1,color: Colors.grey[400],)
+    ])
+    ),
 
-                                            textAlign:TextAlign.end,style: TextStyle(
-                                              fontFamily: helveticaneuemedium,color: Color(0xff12c2e9),
-                                              // fontSize: 12.5
-                                              fontSize: screenwidth*0.0333
-                                          ),
-                                          ),]))
-                                  ],
-                                )),
-                            Divider(thickness: 1,color: Colors.grey[400],)
-                          ])
-                      ));
-              },
-            ),
+    Container(
+    width: MediaQuery.of(context).size.width*0.85,
+    margin: EdgeInsets.only(
+    //     top: 26,left: 26,right: 26
+ //   top: 18,
+   top: screenarea*0.0000719
+    ),
+    child:
+    Column(children:[
+    Container(
+    margin:EdgeInsets.only(
+ //   bottom: 8
+        bottom: screenarea*0.0000319
+    ),
+    child:
+    Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+    ClipOval(child: Container(
+    //      height: 35,width: 35,
+    height: screenwidth*0.093,width: screenwidth*0.093,
+    decoration: BoxDecoration(
+    shape: BoxShape.circle,
+    border:Border.all(color: Colors.grey[700],width: 1,style: BorderStyle.solid)
+    //  color: Color(0xff12c2e9),
+    ),
+    child: Center(child: Icon(Icons.play_arrow,
+    color: Colors.black87,
+    //  size: 26.5,
+    size: screenwidth*0.0706,
+    ),),
+    ),),
+    Container(margin: EdgeInsets.only(
+    //         left: 11
+    left: screenarea*0.0000439
+    ),
+    child: Column(crossAxisAlignment: CrossAxisAlignment.start,mainAxisAlignment:
+    MainAxisAlignment.start,
+    children: [
+    Container(
+    margin:EdgeInsets.only(
+    //  bottom: 4
+    bottom: screenarea*0.0000159
+    ),
+    child: Text("Sleep Playlist",style: TextStyle(
+    fontFamily: helveticaneuemedium,color: Colors.black87,
+    //fontSize: 12.5
+    fontSize: screenwidth*0.0333
+    ),),),
+    Container(child: Text("By Sebastian",style: TextStyle(
+    fontFamily: helveticaneueregular,color: Colors.black54
+        .withOpacity(0.5),
+    //fontSize: 10.5
+    fontSize: screenwidth*0.028
+    ),),),
+    ],),),
+    Expanded(child:
+    Row(
+    mainAxisAlignment: MainAxisAlignment.end,
+    children:[
+    Text(
+    "17:24",
+    textAlign:TextAlign.end,style: TextStyle(
+    fontFamily: helveticaneuemedium,color: Colors.black87,
+    //fontSize: 12.5
+    fontSize: screenwidth*0.0333
 
-          ),
+    ),
+    ),]))
+    ],
+    )),
+    Divider(thickness: 1,color: Colors.grey[400],)
+    ])
+    ),
 
-          Container(
-              width: MediaQuery.of(context).size.width*0.85,
-              margin: EdgeInsets.only(
-//    top: 20,
-                  top: screenarea*0.0000799
-                //  left: 26, right: 26
-                //     right: screenarea*0.000103
-              ),
-              child:
-              Column(children:[
-                Container(
-                    margin:EdgeInsets.only(
-                      //  bottom: 9
-//    bottom: 8
-                        bottom: screenarea*0.0000319
-                    ),
-                    child:
-                    Row(
-
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ClipOval(child: Container(
-                          //           height: 35,width: 35,
-                          height: screenwidth*0.093,width: screenwidth*0.093,
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border:Border.all(color: Color(0xff12c2e9),width: 1,style: BorderStyle.solid)
-                            //  color: Color(0xff12c2e9),
-                          ),
-                          child: Center(child: Icon(Icons.play_arrow,
-                            color: Color(0xff12c2e9),
-                            //     size: 26.5,
-                            size: screenwidth*0.0706,
-                          ),),
-                        ),),
-                        Container(margin: EdgeInsets.only(
-                          //   left: 11
-                            left: screenarea*0.0000439
-                        ),
-                          child: Column(crossAxisAlignment: CrossAxisAlignment.start,mainAxisAlignment:
-                          MainAxisAlignment.start,
-                            children: [
-                              Container(
-                                margin:EdgeInsets.only(
-                                  //   bottom: 4
-                                    bottom: screenarea*0.0000159
-                                ),
-                                child: Text("My Playlist #1",style: TextStyle(
-                                    fontFamily: helveticaneuemedium,color: Color(0xff12c2e9),
-                                    //fontSize: 12.5
-                                    fontSize: screenwidth*0.0333
-                                ),),),
-                              Container(child: Text("By Sebastian",style: TextStyle(
-                                  fontFamily: helveticaneueregular,color: Color(0xff12c2e9).withOpacity(0.5),
-                                  //fontSize: 10.5
-                                  fontSize: screenwidth*0.028
-                              ),),),
-                            ],),),
-                        Expanded(child:
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children:[
-                              Text(
-                                "17:24",
-                                textAlign:TextAlign.end,style: TextStyle(
-                                  fontFamily: helveticaneuemedium,color: Color(0xff12c2e9),
-                                  // fontSize: 12.5
-                                  fontSize: screenwidth*0.0333
-                              ),
-                              ),]))
-                      ],
-                    )),
-                Divider(thickness: 1,color: Colors.grey[400],)
-              ])
-          ),
-
-          Container(
-              width: MediaQuery.of(context).size.width*0.85,
-              margin: EdgeInsets.only(
-                //     top: 26,left: 26,right: 26
-//   top: 18,
-                  top: screenarea*0.0000719
-              ),
-              child:
-              Column(children:[
-                Container(
-                    margin:EdgeInsets.only(
-//   bottom: 8
-                        bottom: screenarea*0.0000319
-                    ),
-                    child:
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ClipOval(child: Container(
-                          //      height: 35,width: 35,
-                          height: screenwidth*0.093,width: screenwidth*0.093,
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border:Border.all(color: Colors.grey[700],width: 1,style: BorderStyle.solid)
-                            //  color: Color(0xff12c2e9),
-                          ),
-                          child: Center(child: Icon(Icons.play_arrow,
-                            color: Colors.black87,
-                            //  size: 26.5,
-                            size: screenwidth*0.0706,
-                          ),),
-                        ),),
-                        Container(margin: EdgeInsets.only(
-                          //         left: 11
-                            left: screenarea*0.0000439
-                        ),
-                          child: Column(crossAxisAlignment: CrossAxisAlignment.start,mainAxisAlignment:
-                          MainAxisAlignment.start,
-                            children: [
-                              Container(
-                                margin:EdgeInsets.only(
-                                  //  bottom: 4
-                                    bottom: screenarea*0.0000159
-                                ),
-                                child: Text("Sleep Playlist",style: TextStyle(
-                                    fontFamily: helveticaneuemedium,color: Colors.black87,
-                                    //fontSize: 12.5
-                                    fontSize: screenwidth*0.0333
-                                ),),),
-                              Container(child: Text("By Sebastian",style: TextStyle(
-                                  fontFamily: helveticaneueregular,color: Colors.black54
-                                  .withOpacity(0.5),
-                                  //fontSize: 10.5
-                                  fontSize: screenwidth*0.028
-                              ),),),
-                            ],),),
-                        Expanded(child:
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children:[
-                              Text(
-                                "17:24",
-                                textAlign:TextAlign.end,style: TextStyle(
-                                  fontFamily: helveticaneuemedium,color: Colors.black87,
-                                  //fontSize: 12.5
-                                  fontSize: screenwidth*0.0333
-
-                              ),
-                              ),]))
-                      ],
-                    )),
-                Divider(thickness: 1,color: Colors.grey[400],)
-              ])
-          ),
-
-        ]);
+    ]);
   }
   Widget trackslist(){
     double screenheight=MediaQuery.of(context).size.height;
@@ -707,27 +585,27 @@ class _LibraryState extends State<Library>with TickerProviderStateMixin {
                     secondaryActions: <Widget>[
                       Column(
                           mainAxisAlignment:MainAxisAlignment.start,children:[
-                        GestureDetector(
-                            onTap: (){
-                              _delete(context, favoritesList[0]);
-                              updateListView();
-                            },
-                            child:
-                            Container(
-                              //       height: 40,width: 40,
-                                height: screenwidth*0.1066,width: screenwidth*0.1066,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.red,
-                                ),
-                                child: Center(child:Container(
-                                  //   height: 4.5,
-                                  height: screenwidth*0.012,
-                                  width: screenwidth*0.048,
-                                  //    width: 18,
-                                  color: Colors.white,
-                                ),)
-                            )),
+                            GestureDetector(
+                              onTap: (){
+                                _delete(context, favoritesList[0]);
+                                updateListView();
+                              },
+                                child:
+                        Container(
+                          //       height: 40,width: 40,
+                            height: screenwidth*0.1066,width: screenwidth*0.1066,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.red,
+                            ),
+                            child: Center(child:Container(
+                              //   height: 4.5,
+                              height: screenwidth*0.012,
+                              width: screenwidth*0.048,
+                              //    width: 18,
+                              color: Colors.white,
+                            ),)
+                        )),
                       ])
                     ],
                     child:
@@ -799,13 +677,13 @@ class _LibraryState extends State<Library>with TickerProviderStateMixin {
             margin: EdgeInsets.only(top:screenwidth*0.0373),
             width: screenwidth*0.85,
             child: Row(mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(child: Text("No tracks added to favorites yet",style: TextStyle(
-                    fontFamily: helveticaneuemedium,
-                    color: Colors.black87,
-                    //        fontSize: 14.5
-                    fontSize: screenwidth*0.0333
+                  fontFamily: helveticaneuemedium,
+                  color: Colors.black87,
+          //        fontSize: 14.5
+            fontSize: screenwidth*0.0333
                 ),),)
               ],
             ),
@@ -837,7 +715,7 @@ class _LibraryState extends State<Library>with TickerProviderStateMixin {
     return Container(
         key: Key("swit"),
         margin: EdgeInsets.only(
-          //    top: 12
+        //    top: 12
             top: screenarea*0.0000479
         ),
         child: Column(mainAxisAlignment: MainAxisAlignment.start,
@@ -882,18 +760,18 @@ class _LibraryState extends State<Library>with TickerProviderStateMixin {
 
                   ],),),
               AnimatedContainer(
-                //  height: 3,
+              //  height: 3,
 
                 height: screenheight*0.00449,
                 child: AnimatedContainer(
                   duration: Duration(milliseconds: 250),
                   height: screenheight*0.00449,
-                  width:downloadedtracks? screenwidth*0.34:screenwidth*0.25,
+width:downloadedtracks? screenwidth*0.34:screenwidth*0.25,
                   decoration: BoxDecoration(color: Color(0xff9797de)),
                 ),
                 margin: EdgeInsets.only(
-                  //    top: 4.5
-                    top: screenarea*0.0000179
+                //    top: 4.5
+                top: screenarea*0.0000179
                 ),
                 duration: Duration(milliseconds: 250),
                 width: screenwidth*0.60,
@@ -903,16 +781,16 @@ class _LibraryState extends State<Library>with TickerProviderStateMixin {
               Container(child: AnimatedSwitcher(
                 //  key: UniqueKey(),
                 duration: Duration(milliseconds: 350),
-                child: downloadedtracks?premiumpage():favplaylist(context),
+                child: downloadedtracks?premiumpage():favplaylist(),
               ),),
-              //  Container(child: premiumpage()),
+            //  Container(child: premiumpage()),
 
             ])
 
 
     );
   }
-  Widget premiumpage(){
+Widget premiumpage(){
     double screenheight=MediaQuery.of(context).size.height;
     double screenwidth=MediaQuery.of(context).size.width;
     double screenarea=screenheight*screenwidth;
@@ -1026,26 +904,26 @@ class _LibraryState extends State<Library>with TickerProviderStateMixin {
                       GestureDetector(
                           onTap: (){
                             Navigator.push(context, MaterialPageRoute(
-                                builder: (context)=>GetPremium()
+                              builder: (context)=>GetPremium()
                             ));
                           },
                           child:
-                          Container(
-                            //     height: 24,
-                            height: screenheight*0.0359,
-                            width: screenwidth*0.2026,
-                            //      width: 76,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(3)),
-                              color: Colors.white,
-                            ),
-                            child:Center(child:Text("Learn more",style:TextStyle(
-                                fontFamily: helveticaneueregular,
-                                color: Colors.grey,
-                                //       fontSize: 10.5
-                                fontSize: screenwidth*0.028
-                            ),)),
-                          )))
+                      Container(
+                        //     height: 24,
+                        height: screenheight*0.0359,
+                        width: screenwidth*0.2026,
+                        //      width: 76,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(3)),
+                          color: Colors.white,
+                        ),
+                        child:Center(child:Text("Learn more",style:TextStyle(
+                            fontFamily: helveticaneueregular,
+                            color: Colors.grey,
+                            //       fontSize: 10.5
+                            fontSize: screenwidth*0.028
+                        ),)),
+                      )))
                 ]),
               ),
 
@@ -1056,62 +934,46 @@ class _LibraryState extends State<Library>with TickerProviderStateMixin {
 
         Container(
           margin:EdgeInsets.only(
-            //      top: 45
-              top: screenarea*0.000179
+        //      top: 45
+         top: screenarea*0.000179
           ),child: Center(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.center,mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Container(child:
+child: Column(crossAxisAlignment: CrossAxisAlignment.center,mainAxisAlignment: MainAxisAlignment.start,
+children: [
+  Container(child:
 
-              Text("No downloads yet",style: TextStyle(
-                  fontFamily: helveticaneuemedium,
-                  color: Colors.black87,
-                  //  fontSize: 18
-                  fontSize: screenwidth*0.048
-              ),)),
-              Container(margin:EdgeInsets.only(
-//     top: 5
-                  top: screenarea*0.0000199
-              ),child:
-              Row(children:[
-                Text("Tap ",style: TextStyle(
-                    fontFamily: helveticaneueregular,
-                    color: Colors.black38,
-                    //      fontSize: 10
-                    fontSize: screenwidth*0.0266
-                ),),
-                Icon(FeatherIcons.download,
-                  //  size: 10,
-                  size: screenwidth*0.0266,
-                  color: Colors.black38
-                  ,),
-                Text(" on track to listen without connection",style: TextStyle(
-                    fontFamily: helveticaneueregular,
-                    color: Colors.black38,
-                    //   fontSize: 10
-                    fontSize: screenwidth*0.0266
+  Text("No downloads yet",style: TextStyle(
+    fontFamily: helveticaneuemedium,
+    color: Colors.black87,
+  //  fontSize: 18
+ fontSize: screenwidth*0.048
+  ),)),
+  Container(margin:EdgeInsets.only(
+ //     top: 5
+  top: screenarea*0.0000199
+  ),child:
+      Row(children:[
+        Text("Tap ",style: TextStyle(
+            fontFamily: helveticaneueregular,
+            color: Colors.black38,
+      //      fontSize: 10
+        fontSize: screenwidth*0.0266
+        ),),
+  Icon(FeatherIcons.download,
+  //  size: 10,
+    size: screenwidth*0.0266,
+    color: Colors.black38
+    ,),
+  Text(" on track to listen without connection",style: TextStyle(
+      fontFamily: helveticaneueregular,
+      color: Colors.black38,
+   //   fontSize: 10
+      fontSize: screenwidth*0.0266
 
-                ),)])),
-            ],),
+  ),)])),
+],),
         ),)
       ],
     );
-  }
-  void updateplaylistview() {
-
-    final Future<Database> dbFuture = playlistDatabaseHelper.initializeDatabase();
-    dbFuture.then((database) {
-
-      Future<List<PlaylistModel>> playListFuture = playlistDatabaseHelper.getPlaylistsList();
-      playListFuture.then((pList) {
-        setState(() {
-          this.playlists = pList;
-          this.playlistcount = pList.length;
-        });
-      });
-    });
-  }
-
+}
   emptycode(){}
 }
-
