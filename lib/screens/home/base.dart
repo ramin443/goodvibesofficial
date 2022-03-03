@@ -1435,7 +1435,7 @@ backgroundColor: Color(0xfff5f5f5),
               icon: SvgPicture.asset("assets/images/home copy.svg",
         width: 23,color: currentindex==0?Color(0xff9797de):Colors.black38,)
               ,
-              title:
+              activeIcon:
               Container(
                 margin: EdgeInsets.only(top: 4,bottom: 2),
                 child:
@@ -1452,7 +1452,7 @@ backgroundColor: Color(0xfff5f5f5),
               SvgPicture.asset("assets/images/noun_Library_2005386.svg",
     width:23,color: currentindex==1?Color(0xff9797de):Colors.black38
     ),
-              title:  Container(
+              activeIcon:  Container(
                   margin: EdgeInsets.only(top: 4,bottom: 2),
                   child:
     Text('Library',style: TextStyle(
@@ -1466,7 +1466,7 @@ backgroundColor: Color(0xfff5f5f5),
                 icon:   Image.asset("assets/images/user@2x.png",
     width:23,color: currentindex==2?Color(0xff9797de):Color(0xff32386a).withOpacity(0.5)
     ),
-                title:Container(
+                activeIcon:Container(
                     margin: EdgeInsets.only(top: 4,bottom: 2),
                     child: Text('Profile',style: TextStyle(
                     fontFamily: helveticaneuemedium,
